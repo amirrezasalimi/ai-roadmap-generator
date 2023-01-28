@@ -10,6 +10,7 @@ const useCreateFlow = () => {
     
     const afterCreateFlow = (_id) => {
         const flowUrlPage = makeUrl(LINKS.FLOW, { id: _id });
+        console.log(flowUrlPage);
         router.push(flowUrlPage);
     }
 
@@ -17,7 +18,7 @@ const useCreateFlow = () => {
         setStatus('loading');
         services.createFlow({token, textOrder}).then(res=> {
             setStatus('done');
-            afterCreateFlow("100");
+            afterCreateFlow(res.data.code);
         }).catch(err=> {
             setStatus('idle');
         })

@@ -16,6 +16,15 @@ export default async function handler(req, res) {
       message: "bad request params"
     })
   }
+  if (!token) {
+    return res.status(200).json({
+      ok: true,
+      data: {
+        roadmap: [],
+        code: "sasd"
+      }
+    })
+  }
   let isFinished = false
   const basePrompt = `create a roadmap for '${title}', make minimum ${itemsCount} items in first ${maximumLevels} levels , maximum ${maximumItems} at items, when you finished send @finish in end , all should has a parent , root parent is 0, in full details, in this valid json format:
   [{
@@ -79,7 +88,7 @@ export default async function handler(req, res) {
       data: JSON.stringify(roadmap)
     })
 
-    return res.status(400).json({
+    return res.status(200).json({
       ok: true,
       data: {
         roadmap,
