@@ -14,13 +14,15 @@
     "@hookform/resolvers": "^2.9.10",
     "@next/font": "13.1.5",
     "@nextui-org/react": "^1.0.0-beta.12",
+    "dagre": "^0.8.5",
     "next": "13.1.5",
     "notistack": "^2.0.8",
     "openai": "^3.1.0",
     "pocketbase": "^0.10.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "^7.42.1"
+    "react-hook-form": "^7.42.1",
+    "reactflow": "^11.5.1"
   },
   "devDependencies": {
     "@types/node": "18.11.18",
