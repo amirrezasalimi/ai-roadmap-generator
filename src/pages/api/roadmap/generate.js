@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const maximumLevels = 3
 
   const debug = false
-  if (!title || !token) {
+  if (!title) {
     return res.status(400).json({
       ok: false,
       message: "bad request params"
