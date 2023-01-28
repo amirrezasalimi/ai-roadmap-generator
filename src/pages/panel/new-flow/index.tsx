@@ -1,6 +1,6 @@
 import React from "react";
 import Head from "next/head";
-import { Button } from '@nextui-org/react';
+import NewFlow from "../../../models/new-flow";
 
 const FlowPage = () => {
   return (
@@ -8,7 +8,7 @@ const FlowPage = () => {
       <Head>
         <title>ai roadmap</title>
       </Head>
-      <Button> flow </Button>
+      <NewFlow />
     </>
   );
 };

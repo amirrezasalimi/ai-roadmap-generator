@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/models/new-flow/index.jsx"  ],
   "exclude": [
     "node_modules"
   ]
