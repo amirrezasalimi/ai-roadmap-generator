@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const title = req.query.title;
   const token = req.query.token;
   // config
-  const itemsCount = req.query.items ?? 10;
+  const eachLevelItemsCount = req.query.items ?? 10;
   const maximumItems = 20
   const maximumLevels = 3
 
@@ -16,13 +16,14 @@ export default async function handler(req, res) {
       message: "bad request params"
     })
   }
-  let isFinished = false
-  const basePrompt = `create a roadmap for '${title}', make minimum ${itemsCount} items in first ${maximumLevels} levels , maximum ${maximumItems} at items, when you finished send @finish in end , all should has a parent , root parent is 0, in full details, in this valid json format:
+  let isFinished = false 
+  //  make minimum ${eachLevelItemsCount} items in first ${maximumLevels} levels,
+  const basePrompt = `create a roadmap for '${title}', maximum ${maximumItems} items at all, when you finished send @finish in end , all should has a parent , root parent is 0, in full details, in this valid json format:
   [{
    "id": 1,
    "level":1,
    "parent":  5 or 0,
-   "title": '...'
+   "title": "..."
   }]
 `
   let prompt = basePrompt
@@ -54,9 +55,9 @@ export default async function handler(req, res) {
       i++;
     } catch (e) {
       isFinished = true
-      return res.status(400).json({
+      return res.status(500).json({
         ok: false,
-        message: e.response
+        message: e?.message
       })
     }
 
@@ -79,7 +80,7 @@ export default async function handler(req, res) {
       data: JSON.stringify(roadmap)
     })
 
-    return res.status(400).json({
+    return res.status(200).json({
       ok: true,
       data: {
         roadmap,
@@ -90,7 +91,7 @@ export default async function handler(req, res) {
     if (debug) {
       console.log(ai_res);
     }
-    res.status(400).json({
+    res.status(500).json({
       ok: false,
       message: e.message
     })
