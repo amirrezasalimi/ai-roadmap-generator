@@ -5,10 +5,6 @@ const nextConfig = {
   },
   async rewrites() {
     return [
-      {
-        source: '/:path*',
-        destination: '/site/:path*/',
-      },
     ]
   },
 }
