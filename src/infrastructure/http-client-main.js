@@ -7,12 +7,14 @@ const mainApi = axios.create({
 });
 mainApi.interceptors.response.use(
   function (response) {
-    toast.success(response.data.message);
+    if(response?.data?.message)
+      toast.success(response.data.message);
     return response;
   },
   function (error) {
     const response = error.response;
-    toast.error(response.data.message);
+    if(response?.data?.message)
+      toast.error(response.data.message);
     return Promise.reject(error);
   }
 );

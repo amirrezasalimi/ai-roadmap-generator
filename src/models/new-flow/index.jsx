@@ -8,7 +8,7 @@ import useCreateFlow from "./hooks/create-flow";
 const NewFlow = () => {
   const createFlow = useCreateFlow();
   const submitForm = (values) => {
-    createFlow.action({ textOrder: values.textOrder, tocken: values.tocken })
+    createFlow.action({ textOrder: values.textOrder, token: values.token })
   }
 
   return (
@@ -29,16 +29,16 @@ const NewFlow = () => {
         <Row justify={'center'}>
           <FormProvider
             returnToParent={false}
-            defaultValues={{ tocken: '', textOrder: '' }}
+            defaultValues={{ token: '', textOrder: '' }}
             onSubmit={async (values) => {
               submitForm(values);
             }}
           >
             <TextField
-              type={'tocken'}
-              label="tocken"
+              type={'token'}
+              label="token"
               fullWidth
-              name="tocken"
+              name="token"
             />
             <TextareaField
               type={'textOrder'}
