@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-const Flow = () => {
+const DrawFlow = () => {
 
   const { query} = useRouter();
   console.log(query.id);
@@ -11,4 +11,4 @@ const Flow = () => {
     </div>
   )
 };
-export default Flow;
+export default DrawFlow;

@@ -13,9 +13,9 @@ const useCreateFlow = () => {
         router.push(flowUrlPage);
     }
 
-    const action = ({tocken, textOrder}) => {
+    const action = ({token, textOrder}) => {
         setStatus('loading');
-        services.createFlow({tocken, textOrder}).then(res=> {
+        services.createFlow({token, textOrder}).then(res=> {
             setStatus('done');
             afterCreateFlow("100");
         }).catch(err=> {
