@@ -1,5 +1,6 @@
 import pocketbase from "pocketbase";
+import { POCKETBASE_URL } from "../constants/config";
 
 export default function pocketbaseInstance() {
-    return new pocketbase('https://roadmap-gen.iran.liara.run/')
+    return new pocketbase(POCKETBASE_URL)
 }

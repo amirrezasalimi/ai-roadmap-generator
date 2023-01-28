@@ -4,9 +4,12 @@ import pocketbaseInstance from "@/shared/helper/pocketbase";
 export default async function handler(req, res) {
   const title = req.query.title;
   const token = req.query.token;
+  // config
   const itemsCount = req.query.items ?? 10;
   const maximumItems = 20
   const maximumLevels = 3
+
+  const debug = false
   if (!title || !token) {
     return res.status(400).json({
       ok: false,
@@ -36,15 +39,19 @@ export default async function handler(req, res) {
       });
       if (openai_res.data.choices.length) {
         const text = openai_res.data.choices[0].text.trim();
+        // sometimes result is not correct and has @finish in the outset , so thats should be ignore
         if (text.match('@finish')) {
+          // we should close loop when gpt has @finish in the end
           if (text != "@finish") {
             isFinished = true
           }
         }
         prompt += text.replace(/\@finish/, '').replace(/\n/, '')
-        console.log(`step ${i}: ${prompt}`);
-
+        if (debug) {
+          console.log(`step ${i}: ${prompt}`);
+        }
       }
+      i++;
     } catch (e) {
       isFinished = true
       return res.status(400).json({
@@ -52,7 +59,10 @@ export default async function handler(req, res) {
         message: e.response
       })
     }
+
   }
+
+  // normalize json result
   let ai_res = prompt.replace(basePrompt, '').trim()
   ai_res = ai_res.replace(/\n$/g, '');
   if (ai_res.at(-1) != "]") {
@@ -60,9 +70,10 @@ export default async function handler(req, res) {
   }
   try {
     const roadmap = JSON.parse(ai_res);
+    // save roadmap
     const pocket = pocketbaseInstance()
     const code = (Math.random() + 1).toString(36).substring(5)
-    const saveRes=await pocket.collection('roadmaps').create({
+    const saveRes = await pocket.collection('roadmaps').create({
       code,
       title,
       data: JSON.stringify(roadmap)
@@ -76,7 +87,9 @@ export default async function handler(req, res) {
       }
     })
   } catch (e) {
-    console.log(ai_res);
+    if (debug) {
+      console.log(ai_res);
+    }
     res.status(400).json({
       ok: false,
       message: e.message
