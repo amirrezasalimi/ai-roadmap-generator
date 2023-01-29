@@ -1,36 +1,46 @@
-import { useSnackbar } from 'notistack';
-
-let useSnackbarRef
-export const SnackbarUtilsConfigurator = () => {
-    useSnackbarRef = useSnackbar();
-    return null
-}
+import { toast } from "react-toastify";
 
 export default {
     close: (key) => {
         useSnackbarRef.closeSnackbar(key)
     },
     success(msg) {
-        return this.toast(msg, 'success')
+        toast.success(msg, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     },
     warning(msg) {
         return this.toast(msg, 'warning')
     },
     info(msg) {
-        return this.toast(msg, 'info')
+        toast.info(msg, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     },
     error(msg) {
-        return this.toast(msg, 'error')
+        toast.error(msg, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            });
     },
-    toast(msg, variant = 'default', options = null) {
-        return useSnackbarRef.enqueueSnackbar(msg, {
-            autoHideDuration: 3000,
-            anchorOrigin: {
-                vertical: 'bottom',
-                horizontal: 'center',
-            },
-            variant,
-            ...options
-        })
-    }
 }

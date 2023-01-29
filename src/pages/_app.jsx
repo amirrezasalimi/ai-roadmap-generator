@@ -1,17 +1,24 @@
 // 1. import `NextUIProvider` component
 import { NextUIProvider } from '@nextui-org/react';
-import { SnackbarProvider } from 'notistack';
-import { SnackbarUtilsConfigurator } from './../shared/components/toast/index';
+import { ToastContainer } from 'react-toastify';
 
 function MyApp({ Component, pageProps }) {
   return (
     <>
-      <SnackbarProvider maxSnack={3}>
-        <SnackbarUtilsConfigurator />
-      </SnackbarProvider>
-    <NextUIProvider>
-      <Component {...pageProps} />
-    </NextUIProvider>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <NextUIProvider>
+        <Component {...pageProps} />
+      </NextUIProvider>
     </>
   );
 }
