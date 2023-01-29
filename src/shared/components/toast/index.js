@@ -6,40 +6,49 @@ export default {
     },
     success(msg) {
         toast.success(msg, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
+            position: "bottom-center",
+            autoClose: 2000,
+            icon: false,
+            closeButton: false,
+            hideProgressBar: true,
             closeOnClick: true,
-            pauseOnHover: true,
             draggable: true,
-            progress: undefined,
             theme: "dark",
         });
     },
     warning(msg) {
-        return this.toast(msg, 'warning')
+        toast.warning(msg, {
+            position: "bottom-center",
+            autoClose: 2000,
+            icon: false,
+            closeButton: false,
+            hideProgressBar: true,
+            closeOnClick: true,
+            draggable: true,
+            theme: "dark",
+        });
     },
     info(msg) {
         toast.info(msg, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
+            position: "bottom-center",
+            autoClose: 2000,
+            icon: false,
+            closeButton: false,
+            hideProgressBar: true,
             closeOnClick: true,
-            pauseOnHover: true,
             draggable: true,
-            progress: undefined,
             theme: "dark",
         });
     },
     error(msg) {
         toast.error(msg, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
+            position: "bottom-center",
+            autoClose: 2000,
+            icon: false,
+            closeButton: false,
+            hideProgressBar: true,
             closeOnClick: true,
-            pauseOnHover: true,
             draggable: true,
-            progress: undefined,
             theme: "dark",
             });
     },
