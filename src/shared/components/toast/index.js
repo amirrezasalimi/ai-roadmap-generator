@@ -1,36 +1,55 @@
-import { useSnackbar } from 'notistack';
-
-let useSnackbarRef
-export const SnackbarUtilsConfigurator = () => {
-    useSnackbarRef = useSnackbar();
-    return null
-}
+import { toast } from "react-toastify";
 
 export default {
     close: (key) => {
         useSnackbarRef.closeSnackbar(key)
     },
     success(msg) {
-        return this.toast(msg, 'success')
+        toast.success(msg, {
+            position: "bottom-center",
+            autoClose: 2000,
+            icon: false,
+            closeButton: false,
+            hideProgressBar: true,
+            closeOnClick: true,
+            draggable: true,
+            theme: "dark",
+        });
     },
     warning(msg) {
-        return this.toast(msg, 'warning')
+        toast.warning(msg, {
+            position: "bottom-center",
+            autoClose: 2000,
+            icon: false,
+            closeButton: false,
+            hideProgressBar: true,
+            closeOnClick: true,
+            draggable: true,
+            theme: "dark",
+        });
     },
     info(msg) {
-        return this.toast(msg, 'info')
+        toast.info(msg, {
+            position: "bottom-center",
+            autoClose: 2000,
+            icon: false,
+            closeButton: false,
+            hideProgressBar: true,
+            closeOnClick: true,
+            draggable: true,
+            theme: "dark",
+        });
     },
     error(msg) {
-        return this.toast(msg, 'error')
+        toast.error(msg, {
+            position: "bottom-center",
+            autoClose: 2000,
+            icon: false,
+            closeButton: false,
+            hideProgressBar: true,
+            closeOnClick: true,
+            draggable: true,
+            theme: "dark",
+            });
     },
-    toast(msg, variant = 'default', options = null) {
-        return useSnackbarRef.enqueueSnackbar(msg, {
-            autoHideDuration: 3000,
-            anchorOrigin: {
-                vertical: 'bottom',
-                horizontal: 'center',
-            },
-            variant,
-            ...options
-        })
-    }
 }
