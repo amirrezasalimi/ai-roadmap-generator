@@ -6,8 +6,8 @@ export default async function handler(req, res) {
   const token = req.query.token;
   // config
   const eachLevelItemsCount = req.query.items ?? 10;
-  const maximumItems = 20
-  const maximumLevels = 3
+  const maxItems = 40
+  const minLevels = 5
 
   const debug = false
   if (!title) {
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   }
   let isFinished = false 
   //  make minimum ${eachLevelItemsCount} items in first ${maximumLevels} levels,
-  const basePrompt = `create a roadmap for '${title}', maximum ${maximumItems} items at all, when you finished send @finish in end , all should has a parent , root parent is 0, in full details, in this valid json format:
+  const basePrompt = `create a roadmap for '${title}', maximum ${maxItems} items at all, minimum ${minLevels} level, when you finished send @finish in end , all should has a parent , root parent is 0, in full details, in this valid json format:
   [{
    "id": 1,
    "level":1,
