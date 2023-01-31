@@ -1,4 +1,4 @@
-import Flow from "@/models/flow";
+import Flow from "@/modules/flow";
 
 const ProjectPage = () => {
     return (
