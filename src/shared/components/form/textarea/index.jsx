@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Textarea } from '@nextui-org/react';
+import Textarea from '../../textarea';
 
 
-const TextareaField = ({ name, commaSeprated, ...rest }) => {
+const TextareaField = ({ name, ...rest }) => {
   const methods = useFormContext();
   const { getValues, setValue, watch, formState, clearErrors } = methods;
   const isInvalid = formState?.errors?.[name];
@@ -19,7 +19,7 @@ const TextareaField = ({ name, commaSeprated, ...rest }) => {
       onChange={(e) => {
           setValue(name, e.target.value);
       }}
-      value={commaSeprated ? showValue : getValues(name)}
+      value={getValues(name)}
       {...rest}
     />
   );
