@@ -8,14 +8,12 @@ const placeholderNodeId = "node-id-";
 const placeholderEdgeId = "edge-id-";
 const spaceBetweenMainBlock = 200;
 const nodeWidth = 200;
-const nodeHeight = 100;
+const nodeHeight = 50;
 const offsetBaseLine = 500;
 
-const dagreGraphBase = new dagre.graphlib.Graph({ });
+const dagreGraphRight = new dagre.graphlib.Graph();
 
-const dagreGraphRight = new dagre.graphlib.Graph({ });
-
-const dagreGraphLeft = new dagre.graphlib.Graph({ });
+const dagreGraphLeft = new dagre.graphlib.Graph() ;
 
 dagreGraphRight.setDefaultEdgeLabel(() => ({}));
 
@@ -33,16 +31,16 @@ const dataToDataNode = (data) => {
             },
             level: data.level,
             position: { x: 0, y: 0 },
-            style: { backgroundColor: 'black', color: 'white' },
+            style: { backgroundColor: 'black', color: 'white', width: 200, height: 50 },
         }
     )
-}
+};
 
 const generateNodes = (data) => {
     const baseNodes = data.filter(d=> d.level === 0 || d.level === 1);
     const level2Nodes = data.filter(d => d.level === 2);
     const otherNodes = data.filter((d) =>(d.level > 2));
-    const rightNodes = level2Nodes.filter((_d, index) =>(index % 2 == 0));
+    const rightNodes = level2Nodes.filter((_d, index) =>(index % 2 === 0));
     const leftNodes = level2Nodes.filter((_d, index) =>(index % 2 !== 0));
 
     otherNodes.forEach((d)=> {
@@ -64,7 +62,7 @@ const generateNodes = (data) => {
 const generateEdges = (data) => {
     const levelOneAndZeroData= data.filter(d=> d.level === 0 || d.level === 1);
     const level2Nodes = data.filter(d => d.level === 2);
-    const baseEdges =levelOneAndZeroData.map((d, _index)=> {
+    const baseEdges = levelOneAndZeroData.map((d, _index)=> {
         const beforeNodeId = levelOneAndZeroData[_index - 1]?.id;
         return{
             id: String(placeholderEdgeId + d.id),
@@ -72,27 +70,29 @@ const generateEdges = (data) => {
             target: String(placeholderNodeId + beforeNodeId),
             type: 'step',
         }
+    });
+
+
+
+    let rightLevelEdges = level2Nodes.filter((_d, index) =>(index % 2 === 0)).map(_d => {
+        const _parent = data.find(_df => _df.id);
+        if(_d.parent === 0 || _d.parent === 1){
+
+        }
+        return({
+            id: String(placeholderEdgeId + _d.id),
+            source: String(placeholderNodeId + _d.id),
+            target: String(placeholderNodeId + _d.parent),
+            type: 'step',
+        })
     })
 
-    /// 
-    const rightLevelEdges = level2Nodes.filter((_d, index) =>(index % 2 == 0)).map(_d => ({
+    let leftLevel2Edges = level2Nodes.filter((_d, index) =>(index % 2 !== 0)).map(_d => ({
         id: String(placeholderEdgeId + _d.id),
         source: String(placeholderNodeId + _d.id),
         target: String(placeholderNodeId + _d.parent),
         type: 'step',
-    })).filter((_e) => baseEdges.find(fe=> fe.source === _e.target))
-    //TODO filter edges conect to level 1 and zero
-    //https://roadmap-generator.iran.liara.run/panel/flow/puxlmbnl
-    //http://localhost:3000/flow/puxlmbnl
-    //https://github.com/dagrejs/dagre/wiki
-    const leftLevel2Edges = level2Nodes.filter((_d, index) =>(index % 2 !== 0)).map(_d => ({
-        id: String(placeholderEdgeId + _d.id),
-        source: String(placeholderNodeId + _d.id),
-        target: String(placeholderNodeId + _d.parent),
-        type: 'step',
-    })).filter((_e) => baseEdges.find(fe=> fe.source === _e.target))
-
-    console.log(rightLevelEdges.filter((_e) => baseEdges.find(fe=> fe.source === _e.target)))
+    }))
 
     const otherEdges = data.filter(d=> d.level > 2).map((d) => {
         return{
@@ -113,30 +113,37 @@ const generateEdges = (data) => {
         }
     })
 
+    rightLevelEdges = rightLevelEdges.filter((_e) => {
+        return !baseEdges.find(fe => fe.source === _e.target);
+    })
+    leftLevel2Edges = leftLevel2Edges.filter((_e) => {
+        return !baseEdges.find(fe => fe.source === _e.target);
+    })
     return {
             baseEdges,
             rightLevelEdges,
             leftLevel2Edges
     }
-}
+};
+
 const getLayoutElements = (_nodes, _edges, _direction, _align, dagreGraph, offset) => {
     dagreGraph.setGraph({
         rankdir: _direction,
-        align: _align,
-
+        align: _align
     });
 
     _nodes.forEach((node) => {
         dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
     });
-
-    _edges?.forEach((edge) => {
-        dagreGraph.setEdge(edge.source, edge.target);
-    });
+    if(_edges) {
+        _edges?.forEach((edge) => {
+            dagreGraph.setEdge(edge.source, edge.target);
+        });
+    }
 
     dagre.layout(dagreGraph)
     
-    _nodes.forEach((node, index) => {
+    _nodes.forEach((node) => {
         const nodeWithPosition = dagreGraph.node(node.id);
 
             if(_direction === "LR"){
@@ -146,6 +153,10 @@ const getLayoutElements = (_nodes, _edges, _direction, _align, dagreGraph, offse
             if(_direction === "RL"){
                 node.targetPosition = 'right';
                 node.sourcePosition = 'left';
+            }
+            if(_direction === "TB"){
+                node.targetPosition = 'top';
+                node.sourcePosition = 'bottom';
             }
 
         node.position = {
@@ -157,18 +168,24 @@ const getLayoutElements = (_nodes, _edges, _direction, _align, dagreGraph, offse
     return [_nodes, _edges];
 };
 
+const getLayoutElementsBase = (_nodes, _edges, _offset ) => {
+
+    _nodes.forEach((node, index) => {
+        node.targetPosition = 'top';
+        node.sourcePosition = 'bottom';
+        node.position = {
+            x: (0 + _offset),
+            y: (index * 100),
+        };
+        return node;
+    });
+    return [_nodes, _edges];
+};
+
+
 function DrawFlow({ data }) {
     const { baseNodes, leftLevel2Nodes, rightLevel2Nodes } = generateNodes(data);
     const { baseEdges, leftLevel2Edges, rightLevelEdges } = generateEdges(data);
-
-    const [layoutNodesBase] = getLayoutElements(
-        baseNodes,
-        null,
-        "UB",
-        "DL",
-        dagreGraphBase,
-        0
-    );
 
     const [layoutNodesLeft, layoutEdgesLeft] = getLayoutElements(
         leftLevel2Nodes,
@@ -183,13 +200,22 @@ function DrawFlow({ data }) {
         rightLevel2Nodes,
         rightLevelEdges,
         "RL",
-        "DL",
+        "UL",
         dagreGraphRight,
         dagreGraphLeft._label.width + offsetBaseLine
     );
+
+    const startPositionBaseGraph = (((dagreGraphRight._label.width + dagreGraphLeft._label.width) + offsetBaseLine) / 2) - nodeWidth /2;
+
+    const [layoutNodesBase] = getLayoutElementsBase(
+        baseNodes,
+        null,
+        startPositionBaseGraph
+    );
+
     const layoutNodes = [...layoutNodesBase, ...layoutNodesLeft, ...layoutNodesRight];
     const layoutEdges = [...layoutEdgesLeft, ...layoutEdgesRight];
-    console.log(layoutEdges)
+
     const [nodes, setNodes, onNodesChange] = useNodesState(layoutNodes);
     const [edges, setEdges] = useEdgesState(layoutEdges);
 
