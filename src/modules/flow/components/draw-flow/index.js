@@ -6,6 +6,7 @@ import styles from './styles.module.css';
 
 const placeholderNodeId = "node-id-";
 const placeholderEdgeId = "edge-id-";
+const placeholderBaseEdgeId = "edge-id-base-";
 const spaceBetweenMainBlock = 200;
 const nodeWidth = 200;
 const nodeHeight = 50;
@@ -13,7 +14,7 @@ const offsetBaseLine = 500;
 
 const dagreGraphRight = new dagre.graphlib.Graph();
 
-const dagreGraphLeft = new dagre.graphlib.Graph() ;
+const dagreGraphLeft = new dagre.graphlib.Graph();
 
 dagreGraphRight.setDefaultEdgeLabel(() => ({}));
 
@@ -54,8 +55,8 @@ const generateNodes = (data) => {
 
     return {
         baseNodes: baseNodes.map((d => (dataToDataNode(d)))),
-        rightLevel2Nodes: rightNodes.map((d => (dataToDataNode(d)))),
-        leftLevel2Nodes: leftNodes.map((d => (dataToDataNode(d)))),
+        rightNodes: rightNodes.map((d => (dataToDataNode(d)))),
+        leftNodes: leftNodes.map((d => (dataToDataNode(d)))),
     }
 };
 
@@ -74,19 +75,14 @@ const generateEdges = (data) => {
 
 
 
-    let rightLevelEdges = level2Nodes.filter((_d, index) =>(index % 2 === 0)).map(_d => {
-        const _parent = data.find(_df => _df.id);
-        if(_d.parent === 0 || _d.parent === 1){
 
-        }
-        return({
+    let rightLevelEdges = level2Nodes.filter((_d, index) =>(index % 2 === 0)).map(_d => ({
             id: String(placeholderEdgeId + _d.id),
             source: String(placeholderNodeId + _d.id),
             target: String(placeholderNodeId + _d.parent),
             type: 'step',
-        })
-    })
-
+        }))
+    
     let leftLevel2Edges = level2Nodes.filter((_d, index) =>(index % 2 !== 0)).map(_d => ({
         id: String(placeholderEdgeId + _d.id),
         source: String(placeholderNodeId + _d.id),
@@ -118,6 +114,16 @@ const generateEdges = (data) => {
     })
     leftLevel2Edges = leftLevel2Edges.filter((_e) => {
         return !baseEdges.find(fe => fe.source === _e.target);
+    })
+    level2Nodes.forEach((_node)=> {
+        if(_node.parent === 1){
+            baseEdges.push({
+                id: String(placeholderEdgeId + _node.id),
+                source: String(placeholderNodeId + _node.id),
+                target: String(placeholderNodeId + _node.parent),
+                type: 'step',
+            })
+        }
     })
     return {
             baseEdges,
@@ -171,8 +177,8 @@ const getLayoutElements = (_nodes, _edges, _direction, _align, dagreGraph, offse
 const getLayoutElementsBase = (_nodes, _edges, _offset ) => {
 
     _nodes.forEach((node, index) => {
-        node.targetPosition = 'top';
-        node.sourcePosition = 'bottom';
+        node.targetPosition = 'bottom';
+        node.sourcePosition = 'top';
         node.position = {
             x: (0 + _offset),
             y: (index * 100),
@@ -184,11 +190,11 @@ const getLayoutElementsBase = (_nodes, _edges, _offset ) => {
 
 
 function DrawFlow({ data }) {
-    const { baseNodes, leftLevel2Nodes, rightLevel2Nodes } = generateNodes(data);
+    const { baseNodes, leftNodes, rightNodes } = generateNodes(data);
     const { baseEdges, leftLevel2Edges, rightLevelEdges } = generateEdges(data);
 
     const [layoutNodesLeft, layoutEdgesLeft] = getLayoutElements(
-        leftLevel2Nodes,
+        leftNodes,
         leftLevel2Edges,
         "LR",
         "DL",
@@ -197,10 +203,10 @@ function DrawFlow({ data }) {
     );
 
     const [layoutNodesRight, layoutEdgesRight] = getLayoutElements(
-        rightLevel2Nodes,
+        rightNodes,
         rightLevelEdges,
         "RL",
-        "UL",
+        "DL",
         dagreGraphRight,
         dagreGraphLeft._label.width + offsetBaseLine
     );
@@ -214,8 +220,8 @@ function DrawFlow({ data }) {
     );
 
     const layoutNodes = [...layoutNodesBase, ...layoutNodesLeft, ...layoutNodesRight];
-    const layoutEdges = [...layoutEdgesLeft, ...layoutEdgesRight];
-
+    const layoutEdges = [...baseEdges, ...layoutEdgesLeft, ...layoutEdgesRight];
+    console.log(layoutNodes, layoutEdges)
     const [nodes, setNodes, onNodesChange] = useNodesState(layoutNodes);
     const [edges, setEdges] = useEdgesState(layoutEdges);
 
