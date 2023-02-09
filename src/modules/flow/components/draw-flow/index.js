@@ -74,6 +74,9 @@ const generateEdges = (data) => {
     });
 
 
+    console.log(levelOneAndZeroData);
+
+    console.log(level2Nodes);
 
 
     let rightLevelEdges = level2Nodes.filter((_d, index) =>(index % 2 === 0)).map(_d => ({
@@ -109,14 +112,18 @@ const generateEdges = (data) => {
         }
     })
 
+    console.log(level2Nodes);
+
     rightLevelEdges = rightLevelEdges.filter((_e) => {
         return !baseEdges.find(fe => fe.source === _e.target);
     })
     leftLevel2Edges = leftLevel2Edges.filter((_e) => {
         return !baseEdges.find(fe => fe.source === _e.target);
     })
+
     level2Nodes.forEach((_node)=> {
-        if(_node.parent === 1){
+        const _parent = data.find(_fd=> _fd.id === _node.parent);
+        if(_parent.level === 1){
             baseEdges.push({
                 id: String(placeholderEdgeId + _node.id),
                 source: String(placeholderNodeId + _node.id),
@@ -221,7 +228,6 @@ function DrawFlow({ data }) {
 
     const layoutNodes = [...layoutNodesBase, ...layoutNodesLeft, ...layoutNodesRight];
     const layoutEdges = [...baseEdges, ...layoutEdgesLeft, ...layoutEdgesRight];
-    console.log(layoutNodes, layoutEdges)
     const [nodes, setNodes, onNodesChange] = useNodesState(layoutNodes);
     const [edges, setEdges] = useEdgesState(layoutEdges);
 
