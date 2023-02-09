@@ -1,134 +1,188 @@
 import dagre from 'dagre';
-import { useCallback } from 'react';
-import ReactFlow, { Controls, Background, useNodesState, useEdgesState, addEdge, MiniMap } from 'reactflow';
+import ReactFlow, {
+    Controls,
+    Background,
+    useNodesState,
+    useEdgesState,
+    MiniMap,
+    ConnectionMode
+} from 'reactflow';
 import 'reactflow/dist/style.css';
 import styles from './styles.module.css';
+import CustomNode from "@/modules/flow/components/custom-node";
+import FloatingEdge from "@/modules/flow/components/flogting-edge";
+import {useEffect, useState} from "react";
+
+const nodeTypes = {
+    custom: CustomNode
+};
+
+const edgeTypes = {
+    floating: FloatingEdge
+};
+
 
 const placeholderNodeId = "node-id-";
 const placeholderEdgeId = "edge-id-";
-const placeholderBaseEdgeId = "edge-id-base-";
+const placeholderNodeIdClone = "node-id-clone-";
+const placeholderEdgeIdClone = "edge-id-clone-";
 const spaceBetweenMainBlock = 200;
-const nodeWidth = 200;
-const nodeHeight = 50;
+const nodeWidth = 300;
+const nodeHeight = 40;
 const offsetBaseLine = 500;
 
 const dagreGraphRight = new dagre.graphlib.Graph();
 
 const dagreGraphLeft = new dagre.graphlib.Graph();
-
 dagreGraphRight.setDefaultEdgeLabel(() => ({}));
 
 dagreGraphLeft.setDefaultEdgeLabel(() => ({}));
 
-const dataToDataNode = (data) => {
-    return (
-        {
-            id: String(placeholderNodeId + data.id),
+const dataToDataNode = async (nodes, data) => {
+    const result = [];
+    for await (let _node of nodes) {
+        const nodeIsClone = _node?.clone;
+        const nodeData = {
+            id: String(nodeIsClone ? placeholderNodeIdClone + _node.id : placeholderNodeId + _node.id),
+            numberId: _node.id,
             data: {
                 label:
                     <div>
-                        {data.title}
+                        {_node.title}
                     </div>
             },
-            level: data.level,
-            position: { x: 0, y: 0 },
-            style: { backgroundColor: 'black', color: 'white', width: 200, height: 50 },
+            level: _node.level,
+            clone: !!nodeIsClone,
+            parentId: String(nodeIsClone ? placeholderNodeIdClone + _node.parent : placeholderNodeId + _node.parent),
+            numberParentId: _node.parent,
+            position: {x: 0, y: 0},
+            type: "custom"
         }
-    )
+        result.push(nodeData)
+    }
+
+    return result;
 };
 
-const generateNodes = (data) => {
-    const baseNodes = data.filter(d=> d.level === 0 || d.level === 1);
-    const level2Nodes = data.filter(d => d.level === 2);
-    const otherNodes = data.filter((d) =>(d.level > 2));
-    const rightNodes = level2Nodes.filter((_d, index) =>(index % 2 === 0));
-    const leftNodes = level2Nodes.filter((_d, index) =>(index % 2 !== 0));
 
-    otherNodes.forEach((d)=> {
-        if(rightNodes.find(fd=> fd.id === d.parent)){
-            rightNodes.push(d);
-        }
-        if(leftNodes.find(fd=> fd.id === d.parent)){
-            leftNodes.push(d);
-        }
+const getClone = (nodesIds, data, clone) => {
+    let children = [];
+    const _clone = [...clone];
+    nodesIds.forEach(_ne => {
+        _clone.push({...data.find((_df => _df.id === _ne)), clone: true});
+        children.push(...data.filter(_df => _df.parent === _ne))
     })
 
+    if (children.length) {
+        const childrenIds = children.map(_cm => (_cm.id))
+        return getClone(childrenIds, data, _clone);
+    } else {
+        return _clone;
+    }
+}
+
+const generateNodes = async (data) => {
+    const baseNodes = [];
+    const level2Nodes = [];
+    const otherNodes = [];
+    const rightNodes = [];
+    const leftNodes = [];
+    for await (let _data of data) {
+        if (_data.level === 0 || _data.level === 1) {
+            baseNodes.push(_data)
+        } else if (_data.level === 2) {
+            level2Nodes.push(_data);
+        } else if (_data.level > 2) {
+            otherNodes.push(_data);
+        }
+    }
+    let indexLevel2Nodes = 0;
+    for await (let _data of level2Nodes) {
+        if (indexLevel2Nodes % 2 === 0) {
+            rightNodes.push(_data)
+        } else {
+            leftNodes.push(_data);
+        }
+        indexLevel2Nodes = indexLevel2Nodes + 1;
+    }
+
+    for await (let _bn of baseNodes) {
+        const children = level2Nodes.filter(_l2n => _l2n.parent === _bn.id);
+        if (children?.length % 2 !== 0) {
+            const lastChild = children[children.length - 1];
+            const rightNodeIndex = rightNodes.findIndex(_fi => _fi.id === lastChild.id);
+            const leftNodeIndex = leftNodes.findIndex(_fi => _fi.id === lastChild.id);
+            const [firstNodeClone, ...anotherNodeClone] = getClone([lastChild.id], data, []);
+            if (rightNodeIndex >= 0) {
+                leftNodes.splice(rightNodeIndex + 1, 0, firstNodeClone);
+                leftNodes.push(...anotherNodeClone);
+            }
+            if (leftNodeIndex >= 0) {
+                rightNodes.splice(leftNodeIndex + 1, 0, firstNodeClone);
+                rightNodes.push(...anotherNodeClone);
+            }
+        }
+    }
+
+    for await (let d of otherNodes) {
+        const parentInRight = rightNodes.find(fd => fd.id === d.parent);
+        const parentInLeft = leftNodes.find(fd => fd.id === d.parent);
+        if (parentInRight && !parentInRight.clone) {
+            rightNodes.push(d);
+        }
+        if (parentInLeft && !parentInLeft.clone) {
+            leftNodes.push(d);
+        }
+    }
+
     return {
-        baseNodes: baseNodes.map((d => (dataToDataNode(d)))),
-        rightNodes: rightNodes.map((d => (dataToDataNode(d)))),
-        leftNodes: leftNodes.map((d => (dataToDataNode(d)))),
+        baseNodes: await dataToDataNode(baseNodes),
+        rightNodes: await dataToDataNode(rightNodes),
+        leftNodes: await dataToDataNode(leftNodes),
     }
 };
 
-const generateEdges = (data) => {
-    const levelOneAndZeroData= data.filter(d=> d.level === 0 || d.level === 1);
-    const level2Nodes = data.filter(d => d.level === 2);
-    const baseEdges = levelOneAndZeroData.map((d, _index)=> {
-        const beforeNodeId = levelOneAndZeroData[_index - 1]?.id;
-        return{
-            id: String(placeholderEdgeId + d.id),
-            source: String(placeholderNodeId + d.id),
-            target: String(placeholderNodeId + beforeNodeId),
-            type: 'step',
+const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
+    // console.log(_baseNodes, _leftNodes, _rightNodes)
+    const baseEdges = _baseNodes.map((d, _index) => {
+        const beforeNodeId = _baseNodes[_index - 1]?.id;
+        return {
+            id: String(placeholderEdgeId + d.numberId),
+            source: beforeNodeId,
+            target: d.id,
+            type: 'floating',
+            sourceHandle: "d",
+            targetHandle: "b",
         }
     });
 
 
-
-
-    let rightLevelEdges = level2Nodes.filter((_d, index) =>(index % 2 === 0)).map(_d => ({
-            id: String(placeholderEdgeId + _d.id),
-            source: String(placeholderNodeId + _d.id),
-            target: String(placeholderNodeId + _d.parent),
-            type: 'step',
-        }))
-    
-    let leftLevel2Edges = level2Nodes.filter((_d, index) =>(index % 2 !== 0)).map(_d => ({
-        id: String(placeholderEdgeId + _d.id),
-        source: String(placeholderNodeId + _d.id),
-        target: String(placeholderNodeId + _d.parent),
+    console.log(_leftNodes)
+    let leftEdges = _leftNodes.map(_node => ({
+        id: String(_node.clone ? placeholderEdgeIdClone + _node.numberId : placeholderEdgeId + _node.numberId),
+        source: _node.parentId,
+        target: _node.id,
         type: 'step',
-    }))
+        sourceHandle: "d",
+        targetHandle: "b",
+    }));
+    console.log(leftEdges)
 
-    const otherEdges = data.filter(d=> d.level > 2).map((d) => {
-        return{
-            id: String(placeholderEdgeId + d.id),
-            source: String(placeholderNodeId + d.id),
-            target: String(placeholderNodeId + d.parent),
-            type: 'step',
-        }
-    });
+    let rightEdges = _rightNodes.map(_node => ({
+        id: String(_node.clone ? placeholderEdgeIdClone + _node.numberId : placeholderEdgeId + _node.numberId),
+        source: _node.id,
+        target: _node.parentId,
+        type: 'step',
+        sourceHandle: "d",
+        targetHandle: "b",
+    }));
 
-    otherEdges.forEach((d)=> {
-   
-        if(rightLevelEdges.find(fd=> fd.source === d.target)){  
-            rightLevelEdges.push(d);
-        }
-        if(leftLevel2Edges.find(fd=> fd.source === d.target)){
-            leftLevel2Edges.push(d);
-        }
-    })
 
-    rightLevelEdges = rightLevelEdges.filter((_e) => {
-        return !baseEdges.find(fe => fe.source === _e.target);
-    })
-    leftLevel2Edges = leftLevel2Edges.filter((_e) => {
-        return !baseEdges.find(fe => fe.source === _e.target);
-    })
-    level2Nodes.forEach((_node)=> {
-        if(_node.parent === 1){
-            baseEdges.push({
-                id: String(placeholderEdgeId + _node.id),
-                source: String(placeholderNodeId + _node.id),
-                target: String(placeholderNodeId + _node.parent),
-                type: 'step',
-            })
-        }
-    })
+
     return {
-            baseEdges,
-            rightLevelEdges,
-            leftLevel2Edges
+        baseEdges,
+        rightEdges: rightEdges,
+        leftEdges: leftEdges
     }
 };
 
@@ -139,31 +193,31 @@ const getLayoutElements = (_nodes, _edges, _direction, _align, dagreGraph, offse
     });
 
     _nodes.forEach((node) => {
-        dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+        dagreGraph.setNode(node.id, {width: nodeWidth, height: nodeHeight});
     });
-    if(_edges) {
+    if (_edges) {
         _edges?.forEach((edge) => {
             dagreGraph.setEdge(edge.source, edge.target);
         });
     }
 
     dagre.layout(dagreGraph)
-    
+
     _nodes.forEach((node) => {
         const nodeWithPosition = dagreGraph.node(node.id);
 
-            if(_direction === "LR"){
-                node.targetPosition = 'left';
-                node.sourcePosition = 'right';
-            }
-            if(_direction === "RL"){
-                node.targetPosition = 'right';
-                node.sourcePosition = 'left';
-            }
-            if(_direction === "TB"){
-                node.targetPosition = 'top';
-                node.sourcePosition = 'bottom';
-            }
+        if (_direction === "LR") {
+            node.targetPosition = 'left';
+            node.sourcePosition = 'right';
+        }
+        if (_direction === "RL") {
+            node.targetPosition = 'right';
+            node.sourcePosition = 'left';
+        }
+        if (_direction === "TB") {
+            node.targetPosition = 'top';
+            node.sourcePosition = 'bottom';
+        }
 
         node.position = {
             x: nodeWithPosition.x - nodeWidth / 2 + offset,
@@ -174,71 +228,106 @@ const getLayoutElements = (_nodes, _edges, _direction, _align, dagreGraph, offse
     return [_nodes, _edges];
 };
 
-const getLayoutElementsBase = (_nodes, _edges, _offset ) => {
-
+const getLayoutElementsBase = (_nodes, _edges, _offset, children) => {
+    let previousNodesLastPosition = 0;
     _nodes.forEach((node, index) => {
         node.targetPosition = 'bottom';
         node.sourcePosition = 'top';
-        node.position = {
-            x: (0 + _offset),
-            y: (index * 100),
-        };
+        const previousNodeBase = _nodes?.[index - 1]?.id;
+        if (previousNodeBase) {
+            previousNodesLastPosition = findLastPosition(previousNodeBase, previousNodesLastPosition, children);
+
+        }
+        if (index === 0) {
+            node.position = {
+                x: (0 + _offset),
+                y: (index - 100) + previousNodesLastPosition,
+            };
+        } else {
+            node.position = {
+                x: (0 + _offset),
+                y: previousNodesLastPosition,
+            };
+        }
         return node;
     });
     return [_nodes, _edges];
 };
 
-
-function DrawFlow({ data }) {
-    const { baseNodes, leftNodes, rightNodes } = generateNodes(data);
-    const { baseEdges, leftLevel2Edges, rightLevelEdges } = generateEdges(data);
-
-    const [layoutNodesLeft, layoutEdgesLeft] = getLayoutElements(
-        leftNodes,
-        leftLevel2Edges,
-        "LR",
-        "DL",
-        dagreGraphLeft,
-        0
+const findLastPosition = (parentId, lastPosition, data) => {
+    const initialValue = {};
+    const bigger = data.filter(_cf => _cf.parentId === parentId).reduce(
+        (accumulator, currentValue) => {
+            if (accumulator?.position?.y > currentValue?.position?.y)
+                return accumulator
+            return currentValue
+        },
+        initialValue
     );
 
-    const [layoutNodesRight, layoutEdgesRight] = getLayoutElements(
-        rightNodes,
-        rightLevelEdges,
-        "RL",
-        "DL",
-        dagreGraphRight,
-        dagreGraphLeft._label.width + offsetBaseLine
-    );
 
-    const startPositionBaseGraph = (((dagreGraphRight._label.width + dagreGraphLeft._label.width) + offsetBaseLine) / 2) - nodeWidth /2;
+    if (bigger?.parentId && lastPosition < bigger?.position?.y) {
+        return findLastPosition(bigger.id, bigger.position?.y, data)
+    } else {
+        return lastPosition
+    }
+}
 
-    const [layoutNodesBase] = getLayoutElementsBase(
-        baseNodes,
-        null,
-        startPositionBaseGraph
-    );
+function DrawFlow({data}) {
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+    const [edges, setEdges] = useEdgesState([]);
+    useEffect(()=> {
+        (async function () {
+            const {baseNodes, leftNodes, rightNodes} = await generateNodes(data);
+            const {baseEdges, leftEdges, rightEdges} = generateEdges(baseNodes, leftNodes, rightNodes);
+            const [layoutNodesLeft, layoutEdgesLeft] = getLayoutElements(
+                leftNodes,
+                leftEdges,
+                "RL",
+                "DL",
+                dagreGraphLeft,
+                0
+            );
 
-    const layoutNodes = [...layoutNodesBase, ...layoutNodesLeft, ...layoutNodesRight];
-    const layoutEdges = [...baseEdges, ...layoutEdgesLeft, ...layoutEdgesRight];
-    console.log(layoutNodes, layoutEdges)
-    const [nodes, setNodes, onNodesChange] = useNodesState(layoutNodes);
-    const [edges, setEdges] = useEdgesState(layoutEdges);
+            const [layoutNodesRight, layoutEdgesRight] = getLayoutElements(
+                rightNodes,
+                rightEdges,
+                "RL",
+                "DL",
+                dagreGraphRight,
+                dagreGraphLeft._label.width + offsetBaseLine
+            );
+            const startPositionBaseGraph = (((dagreGraphRight._label.width + dagreGraphLeft._label.width) + offsetBaseLine) / 2) - nodeWidth / 2;
 
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+            const [layoutNodesBase] = getLayoutElementsBase(
+                baseNodes,
+                null,
+                startPositionBaseGraph,
+                [...layoutNodesLeft, ...layoutNodesRight]
+            );
+            setNodes([...layoutNodesBase, ...layoutNodesLeft, ...layoutNodesRight]);
+            setEdges([...baseEdges, ...layoutEdgesLeft, ...layoutEdgesRight]);
+        }())
+    },[])
+
     return (
         <>
-            <ReactFlow
-                className={styles.baseFlow}
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onConnect={onConnect}
-            >
-                <Controls />
-                <Background />
-                <MiniMap />
-            </ReactFlow>
+            {nodes?.length && edges?.length &&
+                <ReactFlow
+                    className={styles.baseFlow}
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    edgeTypes={edgeTypes}
+                    nodeTypes={nodeTypes}
+                    fitView
+                    connectionMode={ConnectionMode.Loose}
+                >
+                    <Controls/>
+                    <Background/>
+                    <MiniMap/>
+                </ReactFlow>
+            }
         </>
     );
 }

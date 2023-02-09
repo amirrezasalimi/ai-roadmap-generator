@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import useGetFlow from './hooks/get-flow';
 import { useEffect } from 'react';
-import { Col, Container, Loading, Row, Text } from "@nextui-org/react";
+import { Container, Loading, Row, Text } from "@nextui-org/react";
 import DrawFlow from "./components/draw-flow";
 
 const Flow = () => {
