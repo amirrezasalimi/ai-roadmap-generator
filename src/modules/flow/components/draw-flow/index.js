@@ -11,7 +11,7 @@ import 'reactflow/dist/style.css';
 import styles from './styles.module.css';
 import CustomNode from "@/modules/flow/components/custom-node";
 import FloatingEdge from "@/modules/flow/components/flogting-edge";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 
 const nodeTypes = {
     custom: CustomNode
@@ -26,18 +26,31 @@ const placeholderNodeId = "node-id-";
 const placeholderEdgeId = "edge-id-";
 const placeholderNodeIdClone = "node-id-clone-";
 const placeholderEdgeIdClone = "edge-id-clone-";
-const spaceBetweenMainBlock = 200;
-const nodeWidth = 300;
-const nodeHeight = 40;
-const offsetBaseLine = 500;
+const spaceBetweenMainBlock = 50;
+const nodeWidth = 200;
+const nodeHeight = 50;
+const offsetBaseLine = 300;
 
-const dagreGraphRight = new dagre.graphlib.Graph();
+const dagreGraphRight = new dagre.graphlib.Graph({
+
+});
+
+
 
 const dagreGraphLeft = new dagre.graphlib.Graph();
 dagreGraphRight.setDefaultEdgeLabel(() => ({}));
 
 dagreGraphLeft.setDefaultEdgeLabel(() => ({}));
-
+dagreGraphRight.setGraph({
+    nodesep: 5,
+    edgesep: 5,
+    ranksep: 5
+})
+dagreGraphLeft.setGraph({
+    nodesep: 5,
+    edgesep: 5,
+    ranksep: 5
+})
 const dataToDataNode = async (nodes, data) => {
     const result = [];
     for await (let _node of nodes) {
@@ -47,6 +60,7 @@ const dataToDataNode = async (nodes, data) => {
             numberId: _node.id,
             data: {
                 label:
+                    nodeIsClone? "" :
                     <div>
                         {_node.title}
                     </div>
@@ -61,15 +75,19 @@ const dataToDataNode = async (nodes, data) => {
         result.push(nodeData)
     }
 
-    return result;
+    return result.sort((a, b) => (a.numberId - b.numberId));
 };
-
 
 const getClone = (nodesIds, data, clone) => {
     let children = [];
     const _clone = [...clone];
     nodesIds.forEach(_ne => {
-        _clone.push({...data.find((_df => _df.id === _ne)), clone: true});
+        _clone.push({...data.find((_df => _df.id === _ne)), clone: true,  data: {
+                label:
+                    <div>
+
+                    </div>
+            }, });
         children.push(...data.filter(_df => _df.parent === _ne))
     })
 
@@ -112,14 +130,12 @@ const generateNodes = async (data) => {
             const lastChild = children[children.length - 1];
             const rightNodeIndex = rightNodes.findIndex(_fi => _fi.id === lastChild.id);
             const leftNodeIndex = leftNodes.findIndex(_fi => _fi.id === lastChild.id);
-            const [firstNodeClone, ...anotherNodeClone] = getClone([lastChild.id], data, []);
+            const clone = getClone([lastChild.id], data, []);
             if (rightNodeIndex >= 0) {
-                leftNodes.splice(rightNodeIndex + 1, 0, firstNodeClone);
-                leftNodes.push(...anotherNodeClone);
+                leftNodes.push(...clone);
             }
             if (leftNodeIndex >= 0) {
-                rightNodes.splice(leftNodeIndex + 1, 0, firstNodeClone);
-                rightNodes.push(...anotherNodeClone);
+                rightNodes.push(...clone);
             }
         }
     }
@@ -143,7 +159,6 @@ const generateNodes = async (data) => {
 };
 
 const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
-    // console.log(_baseNodes, _leftNodes, _rightNodes)
     const baseEdges = _baseNodes.map((d, _index) => {
         const beforeNodeId = _baseNodes[_index - 1]?.id;
         return {
@@ -156,17 +171,14 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
         }
     });
 
-
-    console.log(_leftNodes)
     let leftEdges = _leftNodes.map(_node => ({
         id: String(_node.clone ? placeholderEdgeIdClone + _node.numberId : placeholderEdgeId + _node.numberId),
-        source: _node.parentId,
-        target: _node.id,
+        source:  _node.id,
+        target: _node.parentId,
         type: 'step',
-        sourceHandle: "d",
-        targetHandle: "b",
+        sourceHandle: "b",
+        targetHandle: "d",
     }));
-    console.log(leftEdges)
 
     let rightEdges = _rightNodes.map(_node => ({
         id: String(_node.clone ? placeholderEdgeIdClone + _node.numberId : placeholderEdgeId + _node.numberId),
@@ -176,8 +188,6 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
         sourceHandle: "d",
         targetHandle: "b",
     }));
-
-
 
     return {
         baseEdges,
@@ -241,12 +251,12 @@ const getLayoutElementsBase = (_nodes, _edges, _offset, children) => {
         if (index === 0) {
             node.position = {
                 x: (0 + _offset),
-                y: (index - 100) + previousNodesLastPosition,
+                y: (index) + previousNodesLastPosition,
             };
         } else {
             node.position = {
                 x: (0 + _offset),
-                y: previousNodesLastPosition,
+                y: previousNodesLastPosition + nodeHeight + spaceBetweenMainBlock,
             };
         }
         return node;
@@ -273,24 +283,97 @@ const findLastPosition = (parentId, lastPosition, data) => {
     }
 }
 
+const syncNodes = ({rightNodes, leftNodes}) => {
+    const syncRightNodes = [...rightNodes];
+    const syncLeftNodes = [...leftNodes];
+
+    syncRightNodes.forEach((_node, index) => {
+        const currentLeftNode = syncLeftNodes[index];
+        const currentRightNode = syncRightNodes[index];
+        const leftChildren = syncLeftNodes.filter(_nf => _nf.numberParentId === syncLeftNodes[index]?.numberId);
+        const rightChildren = syncRightNodes.filter(_nf => _nf.numberParentId === syncRightNodes[index]?.numberId);
+        if (leftChildren.length < rightChildren.length) {
+            const difference = rightChildren.length - leftChildren.length;
+            for (let i = 0; i < difference; i++) {
+                const index = syncLeftNodes.findIndex(_fn=> _fn.id === leftChildren?.[leftChildren.length - 1]?.id);
+                const currentNodeChild = syncLeftNodes[index];
+                const nodeData = {
+                    id: String(placeholderNodeIdClone+currentNodeChild.id),
+                    numberId: currentNodeChild.id,
+                    data: {
+                        label:
+                            <div>
+
+                            </div>
+                    },
+                    level: currentNodeChild.level,
+                    clone: true,
+                    parentId: String(currentLeftNode.id),
+                    numberParentId: currentLeftNode.numberId,
+                    position: {x: 0, y: 0},
+                    "type": "custom",
+                    "targetPosition": "right",
+                    "sourcePosition": "left"
+                }
+                syncLeftNodes.splice(index + 1, 0, nodeData);
+            }
+        }
+        if (rightChildren.length < leftChildren.length) {
+            const difference =  leftChildren.length - rightChildren.length;
+            for (let i = 0; i < difference; i++) {
+                const index = syncRightNodes.findIndex(_fn=> _fn.id === rightChildren?.[rightChildren.length - 1].id) || 0;
+                const currentNodeChild = syncRightNodes[index];
+                const nodeData = {
+                    id: String(placeholderNodeIdClone+currentNodeChild.id),
+                    numberId: currentNodeChild.id,
+                    data: {
+                        label:
+                            <div>
+
+                            </div>
+                    },
+                    level: currentNodeChild.level,
+                    clone: true,
+                    parentId: String(currentRightNode.id),
+                    numberParentId: currentRightNode.numberId,
+                    position: {x: 0, y: 0},
+                    "type": "custom",
+                    "targetPosition": "right",
+                    "sourcePosition": "left"
+                }
+                syncRightNodes.splice(index + 1, 0, nodeData);
+            }
+        }
+    })
+    return {
+        syncLeftNodes,
+        syncRightNodes
+    }
+}
+
 function DrawFlow({data}) {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges] = useEdgesState([]);
-    useEffect(()=> {
+    useEffect(() => {
         (async function () {
             const {baseNodes, leftNodes, rightNodes} = await generateNodes(data);
-            const {baseEdges, leftEdges, rightEdges} = generateEdges(baseNodes, leftNodes, rightNodes);
+            const { syncLeftNodes, syncRightNodes } = syncNodes({
+                rightNodes: rightNodes,
+                leftNodes: leftNodes
+            })
+            const {baseEdges, leftEdges, rightEdges} = generateEdges(baseNodes, syncLeftNodes, syncRightNodes);
+
             const [layoutNodesLeft, layoutEdgesLeft] = getLayoutElements(
-                leftNodes,
+                syncLeftNodes,
                 leftEdges,
-                "RL",
+                "LR",
                 "DL",
                 dagreGraphLeft,
                 0
             );
 
             const [layoutNodesRight, layoutEdgesRight] = getLayoutElements(
-                rightNodes,
+                syncRightNodes,
                 rightEdges,
                 "RL",
                 "DL",
@@ -308,7 +391,7 @@ function DrawFlow({data}) {
             setNodes([...layoutNodesBase, ...layoutNodesLeft, ...layoutNodesRight]);
             setEdges([...baseEdges, ...layoutEdgesLeft, ...layoutEdgesRight]);
         }())
-    },[])
+    }, [])
 
     return (
         <>
@@ -333,3 +416,5 @@ function DrawFlow({data}) {
 }
 
 export default DrawFlow;
+
+
