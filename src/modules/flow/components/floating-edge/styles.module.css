@@ -1,0 +1,12 @@
+.baseEdge {
+  stroke: #2E2E2E;
+}
+
+.otherEdge {
+  stroke: #2E2E2E;
+}
+
+
+.edgeClone {
+  visibility: hidden;
+}
