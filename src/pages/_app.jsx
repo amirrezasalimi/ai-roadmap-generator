@@ -1,8 +1,12 @@
 // 1. import `NextUIProvider` component
+import { defaultTheme } from '@/infrastructure/next-ui';
 import { NextUIProvider } from '@nextui-org/react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import globalStyles from "@/shared/styles/global-style";
+
 function MyApp({ Component, pageProps }) {
+    globalStyles();
   return (
     <>
       <ToastContainer
@@ -16,7 +20,7 @@ function MyApp({ Component, pageProps }) {
         draggable
         pauseOnHover
       />
-      <NextUIProvider>
+      <NextUIProvider theme={defaultTheme}>
         <Component {...pageProps} />
       </NextUIProvider>
     </>

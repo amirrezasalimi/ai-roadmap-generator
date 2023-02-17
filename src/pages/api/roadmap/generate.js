@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       message: "bad request params"
     })
   }
-  let isFinished = false 
+  let isFinished = false
   //  make minimum ${eachLevelItemsCount} items in first ${maximumLevels} levels,
   const basePrompt = `create a roadmap for '${title}', maximum ${maxItems} items at all, minimum ${minLevels} level, when you finished send @finish in end , all should has a parent , root parent is 0, in full details, in this valid json format:
   [{
@@ -71,6 +71,19 @@ export default async function handler(req, res) {
   }
   try {
     const roadmap = JSON.parse(ai_res);
+    // normalize
+
+    // sometimes gpt not giving root item , so we add it manually
+    const hasRoot = roadmap.find(item => item.id == 0);
+    if (!hasRoot) {
+      roadmap.push({
+        id: 0,
+        title
+      })
+    }
+
+    // end
+
     // save roadmap
     const pocket = pocketbaseInstance()
     const code = (Math.random() + 1).toString(36).substring(5)
