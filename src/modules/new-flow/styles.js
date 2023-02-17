@@ -5,11 +5,10 @@ import { styled } from '@nextui-org/react';
 export const ComponentWithStyle = styled('div', {
         display: "flex",
         flexDirection: "column",
-        justifyContent: "start",
+        justifyContent: "center",
         height: `100vh`,
         '.content': {
           gap: 12,
-          justify: "center",
           alignContent: "center",
           justifyContent: "center",
         },
@@ -18,16 +17,10 @@ export const ComponentWithStyle = styled('div', {
         },
         '.box': {
             margin: 'auto',
-            width: '100%'
+            width: '100%',
+            height: '420px'
         },
-        '.card': {
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-            padding: 16,
-            borderRadius: 10,
-            background: "#000F1C"
-        },
+
         '.formContainer': {
             gap: 12,
             display: 'flex',
@@ -41,16 +34,13 @@ export const ComponentWithStyle = styled('div', {
             boxShadow: '',
         },
         '.buttonLinkContainer': {
-            justifyContent: "space-between",
+            justifyContent: "center",
             gap: 16,
-            marginTop: 16,
+            marginTop: 32,
             "& button": {
+                maxWidth: 188,
                 flex: 1,
             }
-        },
-        '.footer': {
-            position: "absolute",
-            bottom: 16,
         },
         '.gradient1': {
             bottom: 0,
