@@ -1,16 +1,13 @@
 import dagre from 'dagre';
 import ReactFlow, {
-    Controls,
-    Background,
     useNodesState,
     useEdgesState,
-    MiniMap,
     ConnectionMode
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import styles from './styles.module.css';
 import CustomNode from "@/modules/flow/components/custom-node";
-import FloatingEdge from "@/modules/flow/components/flogting-edge";
+import FloatingEdge from "@/modules/flow/components/floating-edge";
 import {useEffect} from "react";
 
 const nodeTypes = {
@@ -27,19 +24,15 @@ const placeholderEdgeId = "edge-id-";
 const placeholderNodeIdClone = "node-id-clone-";
 const placeholderEdgeIdClone = "edge-id-clone-";
 const spaceBetweenMainBlock = 50;
-const nodeWidth = 200;
-const nodeHeight = 50;
+const nodeWidth = 300;
+const nodeHeight = 67;
 const offsetBaseLine = 300;
 
-const dagreGraphRight = new dagre.graphlib.Graph({
-
-});
+const dagreGraphRight = new dagre.graphlib.Graph({});
 
 
-
-const dagreGraphLeft = new dagre.graphlib.Graph();
+const dagreGraphLeft = new dagre.graphlib.Graph({});
 dagreGraphRight.setDefaultEdgeLabel(() => ({}));
-
 dagreGraphLeft.setDefaultEdgeLabel(() => ({}));
 dagreGraphRight.setGraph({
     nodesep: 5,
@@ -51,7 +44,7 @@ dagreGraphLeft.setGraph({
     edgesep: 5,
     ranksep: 5
 })
-const dataToDataNode = async (nodes, data) => {
+const dataToDataNode = async (nodes) => {
     const result = [];
     for await (let _node of nodes) {
         const nodeIsClone = _node?.clone;
@@ -59,6 +52,8 @@ const dataToDataNode = async (nodes, data) => {
             id: String(nodeIsClone ? placeholderNodeIdClone + _node.id : placeholderNodeId + _node.id),
             numberId: _node.id,
             data: {
+                clone: !!nodeIsClone,
+                level: _node.level,
                 label:
                     nodeIsClone? "" :
                     <div>
@@ -67,7 +62,7 @@ const dataToDataNode = async (nodes, data) => {
             },
             level: _node.level,
             clone: !!nodeIsClone,
-            parentId: String(nodeIsClone ? placeholderNodeIdClone + _node.parent : placeholderNodeId + _node.parent),
+            parentId: String(nodeIsClone && _node.level > 2 ? placeholderNodeIdClone + _node.parent : placeholderNodeId + _node.parent),
             numberParentId: _node.parent,
             position: {x: 0, y: 0},
             type: "custom"
@@ -83,6 +78,8 @@ const getClone = (nodesIds, data, clone) => {
     const _clone = [...clone];
     nodesIds.forEach(_ne => {
         _clone.push({...data.find((_df => _df.id === _ne)), clone: true,  data: {
+                clone: true,
+                level: _ne.level,
                 label:
                     <div>
 
@@ -159,12 +156,17 @@ const generateNodes = async (data) => {
 };
 
 const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
-    const baseEdges = _baseNodes.map((d, _index) => {
+    const baseEdges = _baseNodes.map((_node, _index) => {
         const beforeNodeId = _baseNodes[_index - 1]?.id;
         return {
-            id: String(placeholderEdgeId + d.numberId),
+            id: String(placeholderEdgeId + _node.numberId),
             source: beforeNodeId,
-            target: d.id,
+            target: _node.id,
+            data: {
+                locked: false,
+                level: _node.level,
+                clone: false,
+            },
             type: 'floating',
             sourceHandle: "d",
             targetHandle: "b",
@@ -175,7 +177,13 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
         id: String(_node.clone ? placeholderEdgeIdClone + _node.numberId : placeholderEdgeId + _node.numberId),
         source:  _node.id,
         target: _node.parentId,
-        type: 'step',
+        type: 'floating',
+        data: {
+            locked: true,
+            level: _node.level,
+            clone: !!_node?.clone,
+        },
+        animated: true,
         sourceHandle: "b",
         targetHandle: "d",
     }));
@@ -184,7 +192,13 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
         id: String(_node.clone ? placeholderEdgeIdClone + _node.numberId : placeholderEdgeId + _node.numberId),
         source: _node.id,
         target: _node.parentId,
-        type: 'step',
+        type: 'floating',
+        data: {
+            locked: true,
+            level: _node.level,
+            clone: !!_node?.clone,
+        },
+        animated: true,
         sourceHandle: "d",
         targetHandle: "b",
     }));
@@ -239,7 +253,7 @@ const getLayoutElements = (_nodes, _edges, _direction, _align, dagreGraph, offse
 };
 
 const getLayoutElementsBase = (_nodes, _edges, _offset, children) => {
-    let previousNodesLastPosition = 0;
+    let previousNodesLastPosition = -117;
     _nodes.forEach((node, index) => {
         node.targetPosition = 'bottom';
         node.sourcePosition = 'top';
@@ -250,13 +264,13 @@ const getLayoutElementsBase = (_nodes, _edges, _offset, children) => {
         }
         if (index === 0) {
             node.position = {
-                x: (0 + _offset),
-                y: (index) + previousNodesLastPosition,
+                x: (0 + _offset) - nodeWidth / 5.5,
+                y: (index) + previousNodesLastPosition - 100,
             };
         } else {
             node.position = {
                 x: (0 + _offset),
-                y: previousNodesLastPosition + nodeHeight + spaceBetweenMainBlock,
+                y: previousNodesLastPosition  + spaceBetweenMainBlock + nodeHeight - 8.5,
             };
         }
         return node;
@@ -301,9 +315,10 @@ const syncNodes = ({rightNodes, leftNodes}) => {
                     id: String(placeholderNodeIdClone+currentNodeChild.id),
                     numberId: currentNodeChild.id,
                     data: {
+                        clone: true,
+                        level: currentNodeChild.level,
                         label:
                             <div>
-
                             </div>
                     },
                     level: currentNodeChild.level,
@@ -327,9 +342,10 @@ const syncNodes = ({rightNodes, leftNodes}) => {
                     id: String(placeholderNodeIdClone+currentNodeChild.id),
                     numberId: currentNodeChild.id,
                     data: {
+                        clone: true,
+                        level: currentNodeChild.level,
                         label:
                             <div>
-
                             </div>
                     },
                     level: currentNodeChild.level,
@@ -338,8 +354,8 @@ const syncNodes = ({rightNodes, leftNodes}) => {
                     numberParentId: currentRightNode.numberId,
                     position: {x: 0, y: 0},
                     "type": "custom",
-                    "targetPosition": "right",
-                    "sourcePosition": "left"
+                    "targetPosition": "left",
+                    "sourcePosition": "right"
                 }
                 syncRightNodes.splice(index + 1, 0, nodeData);
             }
@@ -367,7 +383,7 @@ function DrawFlow({data}) {
                 syncLeftNodes,
                 leftEdges,
                 "LR",
-                "DL",
+                "UL",
                 dagreGraphLeft,
                 0
             );
@@ -380,7 +396,7 @@ function DrawFlow({data}) {
                 dagreGraphRight,
                 dagreGraphLeft._label.width + offsetBaseLine
             );
-            const startPositionBaseGraph = (((dagreGraphRight._label.width + dagreGraphLeft._label.width) + offsetBaseLine) / 2) - nodeWidth / 2;
+            const startPositionBaseGraph = (((dagreGraphRight._label.width + dagreGraphLeft._label.width) + offsetBaseLine) / 2) - nodeWidth / 3;
 
             const [layoutNodesBase] = getLayoutElementsBase(
                 baseNodes,
@@ -406,9 +422,6 @@ function DrawFlow({data}) {
                     fitView
                     connectionMode={ConnectionMode.Loose}
                 >
-                    <Controls/>
-                    <Background/>
-                    <MiniMap/>
                 </ReactFlow>
             }
         </>
