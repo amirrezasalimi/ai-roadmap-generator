@@ -19,6 +19,18 @@ class NewFlowService {
         });
     });
   };
+  getRecentRoadMapList = () => {
+    return new Promise((resolve, reject) => {
+      mainApi
+          .post(NEW_FLOW_API.GET_RECENT_ROAD_MAP_LIST)
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+    });
+  };
 }
 
 export default new NewFlowService();
