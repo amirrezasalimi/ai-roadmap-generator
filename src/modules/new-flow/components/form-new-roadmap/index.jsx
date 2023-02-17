@@ -7,9 +7,9 @@ import Button from "@/shared/components/button";
 import useCreateFlow from "@/modules/new-flow/hooks/create-flow";
 
 const FormNewRoadMap = () => {
-    const createFlow = useCreateFlow();
+    const hookCreateFlow = useCreateFlow();
     const submitForm = (values) => {
-        createFlow.action({textOrder: values.textOrder, token: values.token})
+        hookCreateFlow.action({textOrder: values.textOrder, token: values.token})
     }
     return (
         <ComponentWithStyle>
@@ -45,13 +45,13 @@ const FormNewRoadMap = () => {
                         <Button
                             className="submitButton"
                             size={"lg"}
-                            disabled={createFlow.status === 'loading'}
+                            disabled={hookCreateFlow.status === 'loading'}
                             type="submit"
                         >
-                            {createFlow.status === 'loading' &&
+                            {hookCreateFlow.status === 'loading' &&
                                 <Loading type="points" color="currentColor" size="sm"/>
                             }
-                            {createFlow.status !== 'loading' &&
+                            {hookCreateFlow.status !== 'loading' &&
                                 <>submit</>
                             }
                         </Button>
