@@ -1,11 +1,57 @@
-.nodeCustom {
+.nodeCustomLevel0 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 67px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #6C70FE;
+  border: 1px dashed rgba(108, 112, 254, 0.2);
+  box-shadow: 0px 4px 20px rgba(108, 112, 252, 0.03);
+  border-spacing: 5px;
+  border-radius: 10px;
+  font-size: 12px;
+  text-align: center;
+  stroke-width: 100px;
+  stroke-dasharray: 100px;
+  stroke-dashoffset: 100px;
+}
+
+.nodeCustomLevel1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 192px;
+  height: 67px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #6C70FE;
+  border: 1px solid rgba(108, 112, 254, 0.2);
+  border-radius: 10px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.handle {
+  background: #2E2E2E;
+  border: unset;
+}
+
+.handleDeActive {
+  visibility: hidden;
+}
+
+.nodeCustomLevelOthers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #fff;
   border: 1px solid #1a192b;
   border-radius: 3px;
-  color: #222;
   font-size: 12px;
-  padding: 10px;
   text-align: center;
   height: 40px;
-  width: 200px;
+  width: 300px;
+  padding: 24px 40px;
+  color: #FFFFFFCC;
+  background: rgba(0, 0, 0, 0.4);
 }
