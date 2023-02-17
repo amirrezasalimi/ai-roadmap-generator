@@ -13,8 +13,6 @@ const RecentRoadMap = () => {
         hookGetRecentRoadMap.action();
     },[]);
 
-
-    console.log(hookGetRecentRoadMap.data)
     return (
         <ComponentWithStyle>
             <Card className={'card'}>
@@ -31,10 +29,10 @@ const RecentRoadMap = () => {
                     {
                         hookGetRecentRoadMap.status === "done" &&
                         hookGetRecentRoadMap?.data?.map((item)=> (
-                            <Link href={makeUrl(LINKS.FLOW, item.id)}>
+                            <Link key={`recent-roadmap-item-${item.code}`} href={makeUrl(LINKS.FLOW, item.code)}>
                                 <div className={"item"}>
                                     <Image className={"icon"} alt="github" height={25} width={25} src={'link.svg'}/>
-                                    <Text color={"$secondaryText"}>
+                                    <Text className={"text"}>
                                         {item.title}
                                     </Text>
                                 </div>

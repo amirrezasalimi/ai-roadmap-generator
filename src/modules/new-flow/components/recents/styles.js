@@ -10,6 +10,7 @@ export const ComponentWithStyle = styled('div', {
         flexDirection: "column",
         overflowY: "scroll",
         gap: 12,
+        paddingRight: 6,
         "a": {
             width: "100%",
         },
@@ -24,10 +25,27 @@ export const ComponentWithStyle = styled('div', {
             ".icon": {
                 marginRight: 8
             },
-            "p": {
-                color: "$secondaryText",
+            ".text": {
+                textAlign: "justify",
+                color: "$secondaryText"
             }
-        }
+        },
+
+        "&::-webkit-scrollbar": {
+            width: 4,
+        },
+
+        "&::-webkit-scrollbar-track": {
+            background: "unset"
+        },
+
+        "&::-webkit-scrollbar-thumb": {
+            background: "#1A1A25",
+            borderRadius: 8
+        },
+        "&::-webkit-scrollbar-thumb:hover": {
+            background: "#555",
+        },
     }
 });
 
