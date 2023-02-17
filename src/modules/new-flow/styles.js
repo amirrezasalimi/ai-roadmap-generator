@@ -4,11 +4,21 @@ import { styled } from '@nextui-org/react';
 
 export const ComponentWithStyle = styled('div', {
         display: "flex",
+        flexDirection: "column",
         justifyContent: "start",
         height: `100vh`,
+        '.content': {
+          gap: 12,
+          justify: "center",
+          alignContent: "center",
+          justifyContent: "center",
+        },
+        '.hint': {
+            color: '$secondaryText'
+        },
         '.box': {
             margin: 'auto',
-            maxWidth: 400
+            width: '100%'
         },
         '.card': {
             display: "flex",
