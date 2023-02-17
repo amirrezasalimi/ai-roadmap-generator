@@ -2,18 +2,22 @@ import React, { memo } from 'react';
 import { Handle } from 'reactflow';
 import styles from './styles.module.css';
 import clsx from 'clsx';
-import {log} from "util";
 
-export default memo(({ data: {label, level}, sourcePosition, targetPosition, ...props }) => {
-    let classNames = [];
-    if(level === 0){
-        classNames.push(styles.nodeCustomLevel0);
-    }
-    else if(level === 1){
-        classNames.push(styles.nodeCustomLevel1);
-    }
-    else {
-        classNames.push(styles.nodeCustomLevelOthers);
+export default memo(({ data: {label, level, clone}, sourcePosition, targetPosition, ...props }) => {
+
+    const returnClassName = () => {
+        if(clone){
+            return [styles.nodeClone]
+        }
+        else if(level === 0){
+            return [styles.nodeLevel0]
+        }
+        else if(level === 1){
+            return [styles.nodeLevel1]
+        }
+        else {
+            return [styles.nodeOtherLevel]
+        }
     }
 
     const returnHandleClassName = (position) => {
@@ -26,7 +30,7 @@ export default memo(({ data: {label, level}, sourcePosition, targetPosition, ...
     }
 
     return (
-        <div className={clsx(classNames)}>
+        <div className={clsx(returnClassName())}>
             {label}
             <Handle className={returnHandleClassName("top")} type="source" position="top" id="a" />
             <Handle className={returnHandleClassName("right")} type="source" position="right" id="b" />
