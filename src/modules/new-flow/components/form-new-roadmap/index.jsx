@@ -52,7 +52,7 @@ const FormNewRoadMap = () => {
                                 <Loading type="points" color="currentColor" size="sm"/>
                             }
                             {hookCreateFlow.status !== 'loading' &&
-                                <>submit</>
+                                <>Generate</>
                             }
                         </Button>
                     </div>
