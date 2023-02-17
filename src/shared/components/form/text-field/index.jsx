@@ -13,6 +13,7 @@ const TextField = ({ name, ...rest }) => {
       clearErrors(name);
     }
   }, [watch(name)]);
+
   return (
     <Input
       error={isInvalid}
@@ -20,7 +21,7 @@ const TextField = ({ name, ...rest }) => {
       onChange={(e) => {
           setValue(name, e.target.value);
       }}
-      value={getValues(name)}
+      defaultValue={getValues(name)}
       {...rest}
     />
   );

@@ -19,7 +19,7 @@ const TextareaField = ({ name, ...rest }) => {
       onChange={(e) => {
           setValue(name, e.target.value);
       }}
-      value={getValues(name)}
+      defaultValue={getValues(name)}
       {...rest}
     />
   );
