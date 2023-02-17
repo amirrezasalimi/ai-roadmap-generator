@@ -10,7 +10,6 @@ const useCreateFlow = () => {
     
     const afterCreateFlow = (_id) => {
         const flowUrlPage = makeUrl(LINKS.FLOW, { id: _id });
-        console.log(flowUrlPage);
         router.push(flowUrlPage);
     }
 
