@@ -1,18 +1,11 @@
 import Button from "@/shared/components/button";
-import FormProvider from "@/shared/components/form/provider";
-import TextField from "@/shared/components/form/text-field";
-import TextareaField from "@/shared/components/form/textarea";
-import {Row, Text, Loading, Card, Grid, Spacer} from "@nextui-org/react";
+import {Row, Text, Grid, Spacer} from "@nextui-org/react";
 import Image from "next/image";
-import useCreateFlow from "./hooks/create-flow";
 import ComponentWithStyle from "./styles";
+import RecentRoadMap from "@/modules/new-flow/components/recents";
+import FormNewRoadMap from "@/modules/new-flow/components/form-new-roadmap";
 
 const NewFlow = () => {
-    const createFlow = useCreateFlow();
-    const submitForm = (values) => {
-        createFlow.action({textOrder: values.textOrder, token: values.token})
-    }
-
     return (
         <ComponentWithStyle>
             <Row justify={'center'}>
@@ -44,56 +37,12 @@ const NewFlow = () => {
             <Grid.Container className={'content'}>
                 <Grid xs={12} sm={5} md={4} lg={3} xl={2.5} display="flex" justify="center">
                     <div className={'box'}>
-                        <Card className="card">
-                            <Text size={16} color="$secondaryText">
-                                Enter the relevant token and your content to draw automatically.
-                            </Text>
-                            <FormProvider
-                                returnToParent={false}
-                                defaultValues={{token: '', textOrder: ''}}
-                                onSubmit={async (values) => {
-                                    submitForm(values);
-                                }}
-                            >
-                                <div className="formContainer">
-                                    <TextField
-                                        type={'token'}
-                                        label="token"
-                                        fullWidth
-                                        clearable
-                                        bordered
-                                        name="token"
-                                    />
-                                    <TextareaField
-                                        rows={6}
-                                        type={'textOrder'}
-                                        label="textOrder"
-                                        fullWidth
-                                        clearable
-                                        bordered
-                                        name="textOrder"
-                                    />
-                                    <Button
-                                        className="submitButton"
-                                        size={"lg"}
-                                        disabled={createFlow.status === 'loading'}
-                                        type="submit"
-                                    >
-                                        {createFlow.status === 'loading' &&
-                                            <Loading type="points" color="currentColor" size="sm"/>
-                                        }
-                                        {createFlow.status !== 'loading' &&
-                                            <>submit</>
-                                        }
-                                    </Button>
-                                </div>
-                            </FormProvider>
-                        </Card>
+                        <FormNewRoadMap />
                     </div>
                 </Grid>
                 <Grid xs={12} sm={5} md={4} lg={3} xl={2.5} display="flex" justify="center">
                     <div className={'box'}>
-
+                        <RecentRoadMap />
                     </div>
                 </Grid>
             </Grid.Container>
