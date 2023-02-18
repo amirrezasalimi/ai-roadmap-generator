@@ -1,4 +1,4 @@
 export const LINKS = {
-    FLOW: '/panel/flow/{id}',
-    NEW_FLOW: '/panel/new-flow'
+    FLOW: '/flow/{id}',
+    NEW_FLOW: '/new-flow'
 };
