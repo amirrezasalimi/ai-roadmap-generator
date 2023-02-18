@@ -63,6 +63,7 @@ const dataToDataNode = async (nodes) => {
                         {_node.title}
                     </div>
             },
+            draggable: false,
             level: _node.level,
             clone: !!nodeIsClone,
             parentId: String(nodeIsClone && _node.level > 2 ? placeholderNodeIdClone + _node.parent : placeholderNodeId + _node.parent),
@@ -263,7 +264,6 @@ const getLayoutElementsBase = (_nodes, _edges, _offset, children) => {
         const previousNodeBase = _nodes?.[index - 1]?.id;
         if (previousNodeBase) {
             previousNodesLastPosition = findLastPosition(previousNodeBase, previousNodesLastPosition, children);
-
         }
         if (index === 0) {
             node.position = {
@@ -413,13 +413,17 @@ function DrawFlow({data}) {
     }, [])
 
     const firstNode = nodes[0];
+    const width = window?.document?.body?.clientWidth || 0;
     return (
         <>
             {nodes?.length && edges?.length &&
                 <ReactFlow
                     onInit={(instance)=> {
-                            instance.setViewport({x: firstNode.position.x, y: Math.abs(firstNode.position.y) + 100, zoom: 1})
+                        setTimeout(()=> {
+                            instance.setViewport({ y: Math.abs(firstNode.position.y) + 100 })
+                        }, 0)
                     }}
+                    fitView
                     className={styles.baseFlow}
                     nodes={nodes}
                     edges={edges}
