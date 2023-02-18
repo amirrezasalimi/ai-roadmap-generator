@@ -5,6 +5,8 @@ import ComponentWithStyle from "./styles";
 import RecentRoadMap from "@/modules/new-flow/components/recents";
 import FormNewRoadMap from "@/modules/new-flow/components/form-new-roadmap";
 import Logo from "@/shared/components/logo";
+import Link from "next/link";
+import APP from "@/shared/constants/app";
 
 const NewFlow = () => {
     return (
@@ -13,7 +15,7 @@ const NewFlow = () => {
                 <Logo size={"lg"} />
             </Row>
             <Spacer y={2}/>
-            <Grid.Container className={'content'}>
+            <Grid.Container className={'note'}>
                 <Grid xs={12} sm={10} md={8} lg={6} xl={5} display="flex" direction="column" justify="center">
                     <div className={"card"}>
                         <Text className={"hint"}>
@@ -37,12 +39,18 @@ const NewFlow = () => {
                 </Grid>
             </Grid.Container>
             <Row className="buttonLinkContainer">
-                <Button icon={<Image alt="github" height={25} width={25} src={'github.svg'}/>} size={'lg'}>
-                    github
-                </Button>
-                <Button icon={<Image alt="figma" height={25} width={25} src={'figma.svg'}/>} size={'lg'}>
-                    figma
-                </Button>
+                <Link href={APP.GITHUB_LINK}>
+                    <Button size={'lg'}>
+                        <Image className={"icon"} alt="github" height={25} width={25} src={'github.svg'}/>
+                        github
+                    </Button>
+                </Link>
+                <Link href={APP.FIGMA_LINK}>
+                    <Button size={'lg'}>
+                        <Image className={"icon"} alt="figma" height={25} width={25} src={'figma.svg'}/>
+                        figma
+                    </Button>
+                </Link>
             </Row>
             <div className="gradient1"/>
             <div className="gradient2"/>
