@@ -2,13 +2,15 @@ import dagre from 'dagre';
 import ReactFlow, {
     useNodesState,
     useEdgesState,
-    ConnectionMode
+    ConnectionMode,
+
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import styles from './styles.module.css';
 import CustomNode from "@/modules/flow/components/custom-node";
 import FloatingEdge from "@/modules/flow/components/floating-edge";
 import {useEffect} from "react";
+import {log} from "util";
 
 const nodeTypes = {
     custom: CustomNode
@@ -46,6 +48,7 @@ dagreGraphLeft.setGraph({
 })
 const dataToDataNode = async (nodes) => {
     const result = [];
+
     for await (let _node of nodes) {
         const nodeIsClone = _node?.clone;
         const nodeData = {
@@ -264,7 +267,7 @@ const getLayoutElementsBase = (_nodes, _edges, _offset, children) => {
         }
         if (index === 0) {
             node.position = {
-                x: (0 + _offset) - nodeWidth / 5.5,
+                x: nodeWidth - 4,
                 y: (index) + previousNodesLastPosition - 100,
             };
         } else {
@@ -409,17 +412,20 @@ function DrawFlow({data}) {
         }())
     }, [])
 
+    const firstNode = nodes[0];
     return (
         <>
             {nodes?.length && edges?.length &&
                 <ReactFlow
+                    onInit={(instance)=> {
+                            instance.setViewport({x: firstNode.position.x, y: Math.abs(firstNode.position.y) + 100, zoom: 1})
+                    }}
                     className={styles.baseFlow}
                     nodes={nodes}
                     edges={edges}
                     onNodesChange={onNodesChange}
                     edgeTypes={edgeTypes}
                     nodeTypes={nodeTypes}
-                    fitView
                     connectionMode={ConnectionMode.Loose}
                 >
                 </ReactFlow>
