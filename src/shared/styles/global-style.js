@@ -10,6 +10,9 @@ const globalStyles = globalCss({
         height: "100% !important",
         background: "#000F1C !important"
     },
+    '.react-flow__attribution': {
+        background: "$background !important"
+    }
 });
 
 export default globalStyles;
