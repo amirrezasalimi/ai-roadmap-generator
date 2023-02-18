@@ -23,11 +23,12 @@ const Flow = () => {
             <Row justify={'center'} align={"center"}>
                 <Text ht="bold" size={20}
                   css={{
-                    textGradient: "45deg, $yellow600 -20%, $red600 100%",
+                    textGradient: "$gradientText",
+                    marginRight: 12
                   }}>
                   wait for drawing
                 </Text>
-                <Loading type="points" color="currentColor" size="sm" />
+                <Loading color="secondary" size="sm" />
             </Row>
         </Container>
       }

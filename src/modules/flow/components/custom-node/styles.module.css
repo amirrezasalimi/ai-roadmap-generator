@@ -45,8 +45,8 @@
   background: rgba(0, 0, 0, 0.4);
 }
 .nodeClone {
-  /*visibility: hidden;*/
-  display: none ;
+  visibility: hidden;
+/*  display: none ;*/
   align-items: center;
   justify-content: center;
   border-radius: 3px;
