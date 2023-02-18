@@ -4,23 +4,13 @@ import Image from "next/image";
 import ComponentWithStyle from "./styles";
 import RecentRoadMap from "@/modules/new-flow/components/recents";
 import FormNewRoadMap from "@/modules/new-flow/components/form-new-roadmap";
+import Logo from "@/shared/components/logo";
 
 const NewFlow = () => {
     return (
         <ComponentWithStyle>
             <Row justify={'center'}>
-                <Text span size={60}>
-                    Ai Roadmap
-                    <Text
-                        weight="bold"
-                        css={{
-                            textGradient: "$gradientText",
-                        }}
-                        span
-                        size={60}>
-                        Generator
-                    </Text>
-                </Text>
+                <Logo size={"lg"} />
             </Row>
             <Spacer y={2}/>
             <Grid.Container className={'content'}>
