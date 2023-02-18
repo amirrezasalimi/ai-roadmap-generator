@@ -5,6 +5,9 @@ import Logo from "@/shared/components/logo";
 import {Row, Text} from "@nextui-org/react";
 import copyToClipboard from "@/shared/hooks/copy_clipboard";
 import toast from "@/shared/components/toast";
+import Link from "next/link";
+import APP from "@/shared/constants/app";
+import {LINKS} from "@/shared/constants/links";
 const Header = (props) => {
     const link = typeof window !== "undefined" ? window?.location?.href : "";
     return (
@@ -12,20 +15,24 @@ const Header = (props) => {
             <div className={"main"}>
                 <Row>
                     <Logo size={"md"} />
-                    <Button className={"githubButton"} size={'md'}>
-                        <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/github.svg'}/>
-                        <span>
+                    <Link target={"_blank"} href={APP.GITHUB_LINK}>
+                        <Button className={"githubButton"} size={'md'}>
+                            <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/github.svg'}/>
+                            <span>
                             github
                         </span>
-                    </Button>
+                        </Button>
+                    </Link>
                 </Row>
                 <div>
-                    <Button
-                        className="submitButton"
-                        size={'md'}
-                        type="submit">
-                        Generate
-                    </Button>
+                  <Link href={LINKS.NEW_FLOW}>
+                      <Button
+                          className="submitButton"
+                          size={'md'}
+                          type="submit">
+                          Generate
+                      </Button>
+                  </Link>
                 </div>
             </div>
             <div className={"content"}>

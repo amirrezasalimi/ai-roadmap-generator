@@ -29,7 +29,7 @@ const RecentRoadMap = () => {
                     {
                         hookGetRecentRoadMap.status === "done" &&
                         hookGetRecentRoadMap?.data?.map((item)=> (
-                            <Link key={`recent-roadmap-item-${item.code}`} href={makeUrl(LINKS.FLOW, {id: item.code})}>
+                            <Link target={'_blank'} key={`recent-roadmap-item-${item.code}`} href={makeUrl(LINKS.FLOW, {id: item.code})}>
                                 <div className={"item"}>
                                     <Image className={"icon"} alt="github" height={25} width={25} src={'link.svg'}/>
                                     <Text className={"text"}>
