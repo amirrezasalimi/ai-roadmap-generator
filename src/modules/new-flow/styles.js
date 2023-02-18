@@ -21,18 +21,7 @@ export const ComponentWithStyle = styled('div', {
             height: '420px'
         },
 
-        '.formContainer': {
-            gap: 12,
-            display: 'flex',
-            flexDirection: 'column',
-            "& label": {
-                color: '$tertiaryText'
-            }
-        },
-        '.submitButton': {
-            background: '$gradient',
-            boxShadow: '',
-        },
+
         '.buttonLinkContainer': {
             justifyContent: "center",
             gap: 16,
