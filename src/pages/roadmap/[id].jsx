@@ -1,6 +1,6 @@
 import Flow from "@/modules/flow";
 
-const ProjectPage = () => {
+const RoadmapPage = () => {
     return (
         <>
             <Flow />
@@ -8,4 +8,4 @@ const ProjectPage = () => {
     );
 };
 
-export default ProjectPage;
+export default RoadmapPage;

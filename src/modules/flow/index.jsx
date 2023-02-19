@@ -1,38 +1,43 @@
 import { useRouter } from "next/router";
 import useGetFlow from './hooks/get-flow';
 import { useEffect } from 'react';
-import { Col, Container, Loading, Row, Text } from "@nextui-org/react";
+import { Container, Loading, Row, Text } from "@nextui-org/react";
 import DrawFlow from "./components/draw-flow";
+import Header from "./components/header";
 
 const Flow = () => {
-  const flow = useGetFlow();
+  const hookFlow = useGetFlow();
   const { query } = useRouter();
   const flowId = query.id;
   useEffect(() => {
     if(flowId){
-      flow.action(flowId)
+      hookFlow.action(flowId)
     }
   }, [flowId]);
-
+  const title = hookFlow?.data?.[0]?.title;
   return (
     <>
       {
-        flow.status === 'loading' &&
+          hookFlow.status === 'loading' &&
         <Container css={{ height: "100vh" }} justify="center" alignContent="center" display="flex">
             <Row justify={'center'} align={"center"}>
                 <Text ht="bold" size={20}
                   css={{
-                    textGradient: "45deg, $yellow600 -20%, $red600 100%",
+                    textGradient: "$gradientText",
+                    marginRight: 12
                   }}>
                   wait for drawing
                 </Text>
-                <Loading type="points" color="currentColor" size="sm" />
+                <Loading color="secondary" size="sm" />
             </Row>
         </Container>
       }
       {
-        flow.status === 'done' && 
-        <DrawFlow data={flow.data} />
+        hookFlow.status === 'done' &&
+          <>
+            <Header title={title} />
+            <DrawFlow data={hookFlow.data} />
+          </>
       }
     </>
   )

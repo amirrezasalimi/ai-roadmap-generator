@@ -7,7 +7,6 @@ const mainApi = axios.create({
 });
 mainApi.interceptors.response.use(
   function (response) {
-    console.log(response?.data);
     if(response?.data?.message)
       toast.success(response.data.message);
     return response;
