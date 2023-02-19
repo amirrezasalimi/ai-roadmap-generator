@@ -9,6 +9,7 @@ export const ComponentWithStyle = styled('div', {
         display: "flex",
         flexDirection: "column",
         overflowY: "scroll",
+        overflowX: "hidden",
         gap: 12,
         paddingRight: 6,
         "a": {
