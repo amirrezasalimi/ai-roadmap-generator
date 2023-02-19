@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { Container, Loading, Row, Text } from "@nextui-org/react";
 import DrawFlow from "./components/draw-flow";
 import Header from "./components/header";
-import {ReactFlowProvider} from "reactflow";
 
 const Flow = () => {
   const hookFlow = useGetFlow();
@@ -37,9 +36,7 @@ const Flow = () => {
         hookFlow.status === 'done' &&
           <>
             <Header title={title} />
-            <ReactFlowProvider>
-              <DrawFlow data={hookFlow.data} />
-            </ReactFlowProvider>
+            <DrawFlow data={hookFlow.data} />
           </>
       }
     </>

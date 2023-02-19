@@ -2,7 +2,7 @@ import dagre from 'dagre';
 import ReactFlow, {
     useNodesState,
     useEdgesState,
-    ConnectionMode, useReactFlow,
+    ConnectionMode,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import styles from './styles.module.css';
@@ -370,7 +370,7 @@ const syncNodes = ({rightNodes, leftNodes}) => {
 function DrawFlow({data}) {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges] = useEdgesState([]);
-    const reactFlowInstance = useReactFlow();
+
     useEffect(() => {
         (async function () {
             const {baseNodes, leftNodes, rightNodes} = await generateNodes(data);
@@ -410,15 +410,7 @@ function DrawFlow({data}) {
 
         }())
     }, [])
-
-    useEffect(()=> {
-        const firstNode = nodes[0];
-        if(firstNode){
-            reactFlowInstance.fitView()
-            //reactFlowInstance.setViewport({y: Math.abs(firstNode.position.y) + 100 })
-        }
-    },[nodes])
-
+    const firstNode = nodes[0];
     return (
         <>
             {nodes?.length && edges?.length &&
@@ -426,6 +418,12 @@ function DrawFlow({data}) {
                     className={styles.baseFlow}
                     nodes={nodes}
                     fitView
+                    onInit={(instance) => {
+                        instance.setViewport({y: Math.abs(firstNode.position.y) + 100 })
+                    }}
+                    fitViewOptions={{
+                        zoom: 2
+                    }}
                     edges={edges}
                     onNodesChange={onNodesChange}
                     edgeTypes={edgeTypes}
