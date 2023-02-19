@@ -29,22 +29,24 @@ class MyDocument extends Document {
           <meta name="robots" content="index, follow" />
 
 
-          {`<script async src="https://www.googletagmanager.com/gtag/js?id=G-LJSS307DBD%22%3E</script>
-<script>
-  window.dataLayer = window.dataLayer || [];
+          {/* google analytics */}
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-LJSS307DBD"></script>
+          <script>
+            {`window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-LJSS307DBD');
-</script>
-<script type='text/javascript'>
-  window.smartlook||(function(d) {
+  gtag('config', 'G-LJSS307DBD');`}
+          </script>
+          {/* smartlook */}
+          <script type='text/javascript'>
+            {`window.smartlook||(function(d) {
     var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
     var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
-    c.charset='utf-8';c.src='https://web-sdk.smartlook.com/recorder.js%27;h.appendChild(c);
+    c.charset='utf-8';c.src='https://web-sdk.smartlook.com/recorder.js';h.appendChild(c);
     })(document);
     smartlook('init', '2bd008b8cc9711dbf53820b7169f0c92d4622935', { region: 'eu' });
-</script>`}
+</script>`} </script>
 
         </Head>
         <body>
