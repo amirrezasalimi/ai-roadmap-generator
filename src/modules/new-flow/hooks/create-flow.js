@@ -9,7 +9,7 @@ const useCreateFlow = () => {
     const [status, setStatus] = useState('idle');
     
     const afterCreateFlow = (_id) => {
-        const flowUrlPage = makeUrl(LINKS.FLOW, { id: _id });
+        const flowUrlPage = makeUrl(LINKS.ROADMAP, { id: _id });
         router.push(flowUrlPage);
     }
 

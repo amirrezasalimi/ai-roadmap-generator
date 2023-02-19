@@ -8,7 +8,7 @@ const Logo = (props) => {
     const className = props.size === 'lg' ? "large" : "medium";
     return (
         <ComponentWithStyle className={className}>
-          <Link href={LINKS.NEW_FLOW}>
+          <Link href={LINKS.NEW_ROADMAP}>
               <Image alt="logo" height={0} width={0} src={'/logo.svg'} />
               <Text span>
                   Ai Roadmap

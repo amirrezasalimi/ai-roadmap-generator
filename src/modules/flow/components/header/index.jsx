@@ -25,7 +25,7 @@ const Header = (props) => {
                     </Link>
                 </Row>
                 <div>
-                  <Link href={LINKS.NEW_FLOW}>
+                  <Link href={LINKS.NEW_ROADMAP}>
                       <Button
                           className="submitButton"
                           size={'md'}
