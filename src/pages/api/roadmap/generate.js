@@ -7,8 +7,8 @@ export default async function handler(req, res) {
   // config
   const eachLevelItemsCount = req.query.items ?? 10;
   const maxItems = 40
+  const minItems = 25
   const minLevels = 5
-
   const debug = false
   if (!title) {
     return res.status(400).json({
@@ -17,8 +17,8 @@ export default async function handler(req, res) {
     })
   }
   let isFinished = false
-  //  make minimum ${eachLevelItemsCount} items in first ${maximumLevels} levels,
-  const basePrompt = `create a roadmap for '${title}', maximum ${maxItems} items at all, minimum ${minLevels} level, when you finished send @finish in end , all should has a parent , root parent is 0, in full details, in this valid json format:
+  //  make minimum ${eachLevelItemsCount} items in first ${maximumLevels} levels
+  const basePrompt = `create a roadmap for '${title}', minimum ${minLevels} level, level 1 should has minimum 3 items , minimum ${minItems} items , when you finished send @finish in end , all should has a parent , root parent is 0, in full details ,no null title, nested ,  in valid json:
   [{
    "id": 1,
    "level":1,
@@ -29,6 +29,7 @@ export default async function handler(req, res) {
   let prompt = basePrompt
   const openai = openAiInstance(token)
 
+  var startTime = performance.now()
   let i = 0;
   while (!isFinished) {
     try {
@@ -70,34 +71,43 @@ export default async function handler(req, res) {
     ai_res += ']'
   }
   try {
-    const roadmap = JSON.parse(ai_res);
-    // normalize
-
+    let roadmap = JSON.parse(ai_res);
     // sometimes gpt not giving root item , so we add it manually
-    const hasRoot = roadmap.find(item => item.id == 0);
-    if (!hasRoot) {
+    const rootIndex = roadmap.findIndex(item => item.id == 1);
+    if (rootIndex >= 0) {
       roadmap.push({
-        id: 0,
+        id: 1,
         title
       })
+    } else {
+      if (roadmap[rootIndex]?.title?.trim() == "Root") {
+        roadmap[rootIndex].title = title
+      }
     }
+    // remove null titles
+    roadmap = roadmap.filter(item => item?.title && item?.title != '')
 
     // end
 
     // save roadmap
     const pocket = pocketbaseInstance()
     const code = (Math.random() + 1).toString(36).substring(5)
+
+    var endTime = performance.now()
+
     const saveRes = await pocket.collection('roadmaps').create({
       code,
       title,
-      data: JSON.stringify(roadmap)
+      data: JSON.stringify(roadmap),
+      prompt: basePrompt,
+      generate_time: Math.floor((endTime - startTime) / 1000) // save seconds
     })
 
     return res.status(200).json({
       ok: true,
       data: {
         roadmap,
-        code
+        code,
       }
     })
   } catch (e) {
