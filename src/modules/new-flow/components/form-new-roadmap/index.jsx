@@ -35,8 +35,8 @@ const FormNewRoadMap = () => {
                         />
                         <TextareaField
                             rows={6}
-                            type={'textOrder'}
-                            label="textOrder"
+                            type={'text'}
+                            label="description"
                             fullWidth
                             clearable
                             bordered
