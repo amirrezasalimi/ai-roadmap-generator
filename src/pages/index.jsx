@@ -6,7 +6,7 @@ const HomePage = () => {
   return (
     <>
       <Head>
-        <title>ai roadmap</title>
+        <title>Ai Roadmap Generator</title>
       </Head>
       <NewFlow />
     </>
