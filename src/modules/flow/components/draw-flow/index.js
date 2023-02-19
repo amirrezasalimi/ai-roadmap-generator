@@ -63,6 +63,7 @@ const dataToDataNode = async (nodes) => {
             },
             level: _node.level,
             clone: !!nodeIsClone,
+            draggable: !nodeIsClone,
             parentId: String(nodeIsClone && _node.level > 2 ? placeholderNodeIdClone + _node.parent : placeholderNodeId + _node.parent),
             numberParentId: _node.parent,
             position: {x: 0, y: 0},
