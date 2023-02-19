@@ -44,7 +44,8 @@ export const ComponentWithStyle = styled('div', {
         height: 439,
         background: '#7A008E',
         mixBlendMode: 'normal',
-        filter: 'blur(400px)'
+        filter: 'blur(400px)',
+        pointerEvents: "none"
     },
     '.gradient2': {
         top: 0,
@@ -54,7 +55,8 @@ export const ComponentWithStyle = styled('div', {
         height: 439,
         background: '#7A008E',
         mixBlendMode: 'normal',
-        filter: 'blur(400px)'
+        filter: 'blur(400px)',
+        pointerEvents: "none"
     },
 });
 

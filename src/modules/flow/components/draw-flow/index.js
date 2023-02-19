@@ -2,15 +2,13 @@ import dagre from 'dagre';
 import ReactFlow, {
     useNodesState,
     useEdgesState,
-    ConnectionMode,
-
+    ConnectionMode, useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import styles from './styles.module.css';
 import CustomNode from "@/modules/flow/components/custom-node";
 import FloatingEdge from "@/modules/flow/components/floating-edge";
-import {useEffect} from "react";
-import {log} from "util";
+import { useEffect } from "react";
 
 const nodeTypes = {
     custom: CustomNode
@@ -63,7 +61,6 @@ const dataToDataNode = async (nodes) => {
                         {_node.title}
                     </div>
             },
-            draggable: false,
             level: _node.level,
             clone: !!nodeIsClone,
             parentId: String(nodeIsClone && _node.level > 2 ? placeholderNodeIdClone + _node.parent : placeholderNodeId + _node.parent),
@@ -373,6 +370,7 @@ const syncNodes = ({rightNodes, leftNodes}) => {
 function DrawFlow({data}) {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges] = useEdgesState([]);
+    const reactFlowInstance = useReactFlow();
     useEffect(() => {
         (async function () {
             const {baseNodes, leftNodes, rightNodes} = await generateNodes(data);
@@ -409,30 +407,31 @@ function DrawFlow({data}) {
             );
             setNodes([...layoutNodesBase, ...layoutNodesLeft, ...layoutNodesRight]);
             setEdges([...baseEdges, ...layoutEdgesLeft, ...layoutEdgesRight]);
+
         }())
     }, [])
 
-    const firstNode = nodes[0];
-    const width = window?.document?.body?.clientWidth || 0;
+    useEffect(()=> {
+        const firstNode = nodes[0];
+        if(firstNode){
+            reactFlowInstance.fitView()
+            //reactFlowInstance.setViewport({y: Math.abs(firstNode.position.y) + 100 })
+        }
+    },[nodes])
+
     return (
         <>
             {nodes?.length && edges?.length &&
                 <ReactFlow
-                    onInit={(instance)=> {
-                        setTimeout(()=> {
-                            instance.setViewport({ y: Math.abs(firstNode.position.y) + 100 })
-                        }, 0)
-                    }}
-                    fitView
                     className={styles.baseFlow}
                     nodes={nodes}
+                    fitView
                     edges={edges}
                     onNodesChange={onNodesChange}
                     edgeTypes={edgeTypes}
                     nodeTypes={nodeTypes}
                     connectionMode={ConnectionMode.Loose}
-                >
-                </ReactFlow>
+                />
             }
         </>
     );
