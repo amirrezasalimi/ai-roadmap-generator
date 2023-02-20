@@ -11,6 +11,7 @@ import APP from "@/shared/constants/app";
 const NewFlow = () => {
     return (
         <ComponentWithStyle>
+            <Spacer y={2}/>
             <Row justify={'center'}>
                 <Logo size={"lg"} />
             </Row>
@@ -52,6 +53,7 @@ const NewFlow = () => {
                     </Button>
                 </Link>
             </Row>
+            <Spacer y={2}/>
             <div className="gradient1"/>
             <div className="gradient2"/>
         </ComponentWithStyle>

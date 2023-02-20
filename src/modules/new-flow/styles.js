@@ -2,18 +2,25 @@ import {styled} from '@nextui-org/react';
 
 export const ComponentWithStyle = styled('div', {
     display: "flex",
+    width: "100vw",
+    padding: 12,
     flexDirection: "column",
     justifyContent: "center",
-    height: `100vh`,
+    "@sm": {
+        padding: 0,
+        height: `100vh`,
+    },
     '.note': {
         alignContent: "center",
         justifyContent: "center",
     },
     '.content': {
         gap: 12,
-        paddingInline: 12,
         alignContent: "center",
         justifyContent: "center",
+        "@sm": {
+            paddingInline: 12,
+        },
     },
     '.hint': {
         color: '$secondaryText'
@@ -37,26 +44,30 @@ export const ComponentWithStyle = styled('div', {
         }
     },
     '.gradient1': {
-        bottom: 0,
-        right: 0,
-        position: 'absolute',
-        width: 439,
-        height: 439,
-        background: '#7A008E',
-        mixBlendMode: 'normal',
-        filter: 'blur(400px)',
-        pointerEvents: "none"
+        "@md": {
+            bottom: 0,
+            right: 0,
+            position: 'absolute',
+            width: 439,
+            height: 439,
+            background: '#7A008E',
+            mixBlendMode: 'normal',
+            filter: 'blur(400px)',
+            pointerEvents: "none",
+        }
     },
     '.gradient2': {
-        top: 0,
-        left: 0,
-        position: 'absolute',
-        width: 439,
-        height: 439,
-        background: '#7A008E',
-        mixBlendMode: 'normal',
-        filter: 'blur(400px)',
-        pointerEvents: "none"
+       "@md": {
+           top: 0,
+           left: 0,
+           position: 'absolute',
+           width: 439,
+           height: 439,
+           background: '#7A008E',
+           mixBlendMode: 'normal',
+           filter: 'blur(400px)',
+           pointerEvents: "none"
+       }
     },
 });
 
