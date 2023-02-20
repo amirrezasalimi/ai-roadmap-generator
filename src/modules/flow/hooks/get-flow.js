@@ -3,11 +3,11 @@ import services from '../services';
 
 const useGetFlow = () => {
     const [status, setStatus] = useState('loading');
-    const [data, setData] = useState([]);
+    const [data, setData] = useState();
     const action = (id) => {
         setStatus('loading');
         services.getFlowData(id).then(res=> {
-            const data = res.data.data;
+            const data = res.data;
             setData(data);
             setStatus('done');
         }).catch(err=> {

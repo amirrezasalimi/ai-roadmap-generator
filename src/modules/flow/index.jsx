@@ -15,7 +15,7 @@ const Flow = () => {
       hookFlow.action(flowId)
     }
   }, [flowId]);
-  const title = hookFlow?.data?.[0]?.title;
+  const title = hookFlow?.data?.title;
   return (
     <>
       {
@@ -42,7 +42,7 @@ const Flow = () => {
             </title>
           </Head>
           <Header title={title} />
-          <DrawFlow data={hookFlow.data} />
+          <DrawFlow data={hookFlow.data.data} />
         </>
       }
     </>
