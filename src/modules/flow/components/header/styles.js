@@ -21,26 +21,40 @@ export const ComponentWithStyle = styled('div', {
         borderBottom: "1px solid #1D1D1D",
     },
     ".content": {
+        overflowX: "hidden",
+        overflowY: "auto",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         height: 100,
         padding: 16,
-        marginInline: 100,
+        "@md": {
+            overflowX: "hidden",
+            overflowY: "hidden",
+            marginInline: 100,
+        },
         borderBottom: "1px solid #1D1D1D",
         ".share": {
-            display: "flex",
-            ".shareTitle": {
-                marginRight: 12,
-                alignSelf: "center",
-                color: '#757475'
-            },
-            ".shareItem": {
-                marginInline: 6
-            },
+            display: "none",
+            "@xs": {
+                display: "flex",
+                ".shareTitle": {
+                    marginRight: 12,
+                    alignSelf: "center",
+                    color: '#757475'
+                },
+                ".shareItem": {
+                    marginInline: 6
+                },
+            }
         },
         ".title": {
-          color: '#757475'
+            marginRight: 12,
+            flex: 1,
+            height: "100%",
+            ":first-child": {
+                color: '#757475'
+            }
         }
     },
     '.submitButton': {
