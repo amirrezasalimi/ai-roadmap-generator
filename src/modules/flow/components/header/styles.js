@@ -51,8 +51,11 @@ export const ComponentWithStyle = styled('div', {
         ".title": {
             marginRight: 12,
             flex: 1,
+            display: "flex",
+            alignItems: "center",
             height: "100%",
             ":first-child": {
+                marginRight: 6,
                 color: '#757475'
             }
         }
