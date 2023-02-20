@@ -41,7 +41,7 @@ const Header = (props) => {
                         {'Description: '}
                     </Text>
                     <Text span>
-                        {props?.title} amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir mir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir amir
+                        {props?.title}
                     </Text>
                 </div>
                 <div className={"share"}>
