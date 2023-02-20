@@ -9,6 +9,7 @@ import styles from './styles.module.css';
 import CustomNode from "@/modules/flow/components/custom-node";
 import FloatingEdge from "@/modules/flow/components/floating-edge";
 import { useEffect } from "react";
+import mobileAndTabletCheck from "@/shared/helper/mobile-and-tablet-check";
 
 const nodeTypes = {
     custom: CustomNode
@@ -44,11 +45,15 @@ dagreGraphLeft.setGraph({
     edgesep: 5,
     ranksep: 5
 })
+
+const isDraggable = mobileAndTabletCheck();
+
 const dataToDataNode = async (nodes) => {
     const result = [];
 
     for await (let _node of nodes) {
         const nodeIsClone = _node?.clone;
+        const finallyDraggable = !isDraggable && !nodeIsClone;
         const nodeData = {
             id: String(nodeIsClone ? placeholderNodeIdClone + _node.id : placeholderNodeId + _node.id),
             numberId: _node.id,
@@ -63,7 +68,7 @@ const dataToDataNode = async (nodes) => {
             },
             level: _node.level,
             clone: !!nodeIsClone,
-            draggable: !nodeIsClone,
+            draggable: finallyDraggable,
             parentId: String(nodeIsClone && _node.level > 2 ? placeholderNodeIdClone + _node.parent : placeholderNodeId + _node.parent),
             numberParentId: _node.parent,
             position: {x: 0, y: 0},
