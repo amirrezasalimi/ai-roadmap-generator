@@ -29,18 +29,24 @@ const nodeWidth = 300;
 const nodeHeight = 67;
 const offsetBaseLine = 300;
 
-const dagreGraphRight = new dagre.graphlib.Graph({});
+const dagreGraphRight = new dagre.graphlib.Graph({
+    acyclicer: "greedy"
+});
 
 
-const dagreGraphLeft = new dagre.graphlib.Graph({});
+const dagreGraphLeft = new dagre.graphlib.Graph({
+    acyclicer: "greedy"
+});
 dagreGraphRight.setDefaultEdgeLabel(() => ({}));
 dagreGraphLeft.setDefaultEdgeLabel(() => ({}));
 dagreGraphRight.setGraph({
+    acyclicer: "greedy",
     nodesep: 5,
     edgesep: 5,
     ranksep: 5
 })
 dagreGraphLeft.setGraph({
+    acyclicer: "greedy",
     nodesep: 5,
     edgesep: 5,
     ranksep: 5
@@ -106,7 +112,7 @@ const getClone = (nodesIds, data, clone) => {
 const generateNodes = async (data) => {
     const baseNodes = [];
     const level2Nodes = [];
-    const otherNodes = [];
+    let otherNodes = [];
     const rightNodes = [];
     const leftNodes = [];
     for await (let _data of data) {
@@ -143,6 +149,7 @@ const generateNodes = async (data) => {
             }
         }
     }
+    otherNodes = otherNodes.sort((a, b)=> (a.parent - b.parent));
 
     for await (let d of otherNodes) {
         const parentInRight = rightNodes.find(fd => fd.id === d.parent);
@@ -154,19 +161,19 @@ const generateNodes = async (data) => {
             leftNodes.push(d);
         }
     }
-
     return {
-        baseNodes: await dataToDataNode(baseNodes),
-        rightNodes: await dataToDataNode(rightNodes),
-        leftNodes: await dataToDataNode(leftNodes),
+        baseNodes: await dataToDataNode(baseNodes.sort((a, b)=> (a.parent - b.parent))),
+        rightNodes: await dataToDataNode(rightNodes.sort((a, b)=> (a.parent - b.parent))),
+        leftNodes: await dataToDataNode(leftNodes.sort((a, b)=> (a.parent - b.parent))),
     }
 };
 
 const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
-    const baseEdges = _baseNodes.map((_node, _index) => {
+    const baseEdges = [];
+    _baseNodes.forEach((_node, _index) => {
         const beforeNodeId = _baseNodes[_index - 1]?.id;
-        return {
-            id: String(placeholderEdgeId + _node.numberId),
+        baseEdges.push({
+            id: String(placeholderEdgeId + "base-" + _index),
             source: beforeNodeId,
             target: _node.id,
             data: {
@@ -177,11 +184,44 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
             type: 'floating',
             sourceHandle: "d",
             targetHandle: "b",
-        }
+        });
+        _leftNodes.forEach((_leftNode, _index) => {
+            if(_node.id === _leftNode.parentId){
+                baseEdges.push({
+                    id: String(placeholderEdgeId + "base-to-left-" + _index),
+                    source: _node.id,
+                    target: _leftNode.id,
+                    data: {
+                        locked: false,
+                        level: _node.level,
+                        clone: false,
+                    },
+                    type: 'floating',
+                    sourceHandle: "d",
+                    targetHandle: "b",
+                });
+            }
+        })
+        _rightNodes.forEach((_rightNode, _index) => {
+            if(_node.id === _rightNode.parentId){
+                baseEdges.push({
+                    id: String(placeholderEdgeId + "base-to-right-" + _index),
+                    source: _node.id,
+                    target: _rightNode.id,
+                    data: {
+                        locked: false,
+                        level: _node.level,
+                        clone: false,
+                    },
+                    type: 'floating',
+                    sourceHandle: "d",
+                    targetHandle: "b",
+                });
+            }
+        })
     });
-
-    let leftEdges = _leftNodes.map(_node => ({
-        id: String(_node.clone ? placeholderEdgeIdClone + _node.numberId : placeholderEdgeId + _node.numberId),
+    let leftEdges = _leftNodes.filter(_n => !_baseNodes.find(_bn => _bn.numberId === _n.numberParentId)).map((_node, _index) => ({
+        id: String(placeholderEdgeId+ "left-" + _index),
         source:  _node.id,
         target: _node.parentId,
         type: 'floating',
@@ -195,8 +235,8 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
         targetHandle: "d",
     }));
 
-    let rightEdges = _rightNodes.map(_node => ({
-        id: String(_node.clone ? placeholderEdgeIdClone + _node.numberId : placeholderEdgeId + _node.numberId),
+    let rightEdges = _rightNodes.filter(_n => !_baseNodes.find(_bn => _bn.numberId === _n.numberParentId)).map((_node, _index) => ({
+        id: String(placeholderEdgeId+ "right-" + _index),
         source: _node.id,
         target: _node.parentId,
         type: 'floating',
@@ -209,7 +249,6 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
         sourceHandle: "d",
         targetHandle: "b",
     }));
-
     return {
         baseEdges,
         rightEdges: rightEdges,
@@ -270,8 +309,8 @@ const getLayoutElementsBase = (_nodes, _edges, _offset, children) => {
         }
         if (index === 0) {
             node.position = {
-                x: nodeWidth - 4,
-                y: (index) + previousNodesLastPosition - 100,
+                x: _offset - 104,
+                y:  previousNodesLastPosition - 100,
             };
         } else {
             node.position = {
@@ -314,12 +353,12 @@ const syncNodes = ({rightNodes, leftNodes}) => {
         const rightChildren = syncRightNodes.filter(_nf => _nf.numberParentId === syncRightNodes[index]?.numberId);
         if (leftChildren.length < rightChildren.length) {
             const difference = rightChildren.length - leftChildren.length;
-            for (let i = 0; i < difference; i++) {
-                const index = syncLeftNodes.findIndex(_fn=> _fn.id === leftChildren?.[leftChildren.length - 1]?.id);
-                const currentNodeChild = syncLeftNodes[index];
+            for (let i = 1; i <= difference; i++) {
+                const index = rightChildren.findIndex(_fn=> _fn.id === rightChildren?.[rightChildren.length - i]?.id);
+                const currentNodeChild = rightChildren[index];
                 const nodeData = {
-                    id: String(placeholderNodeIdClone+currentNodeChild.id),
-                    numberId: currentNodeChild.id,
+                    id: String(placeholderNodeIdClone+currentNodeChild.numberId),
+                    numberId: currentNodeChild.numberId,
                     data: {
                         clone: true,
                         level: currentNodeChild.level,
@@ -336,17 +375,17 @@ const syncNodes = ({rightNodes, leftNodes}) => {
                     "targetPosition": "right",
                     "sourcePosition": "left"
                 }
-                syncLeftNodes.splice(index + 1, 0, nodeData);
+                syncLeftNodes.splice(difference, 0, nodeData);
             }
         }
-        if (rightChildren.length < leftChildren.length) {
+        else if (rightChildren.length < leftChildren.length) {
             const difference =  leftChildren.length - rightChildren.length;
             for (let i = 0; i < difference; i++) {
                 const index = syncRightNodes.findIndex(_fn=> _fn.id === rightChildren?.[rightChildren.length - 1].id) || 0;
                 const currentNodeChild = syncRightNodes[index];
                 const nodeData = {
-                    id: String(placeholderNodeIdClone+currentNodeChild.id),
-                    numberId: currentNodeChild.id,
+                    id: String(placeholderNodeIdClone+currentNodeChild.numberId),
+                    numberId: currentNodeChild.numberId,
                     data: {
                         clone: true,
                         level: currentNodeChild.level,
@@ -363,7 +402,7 @@ const syncNodes = ({rightNodes, leftNodes}) => {
                     "targetPosition": "left",
                     "sourcePosition": "right"
                 }
-                syncRightNodes.splice(index + 1, 0, nodeData);
+                syncRightNodes.splice(difference, 0, nodeData);
             }
         }
     })
@@ -380,17 +419,20 @@ function DrawFlow({data}) {
     useEffect(() => {
         (async function () {
             const {baseNodes, leftNodes, rightNodes} = await generateNodes(data);
+
+            // const syncLeftNodes = leftNodes;
+            // const syncRightNodes = rightNodes;
             const { syncLeftNodes, syncRightNodes } = syncNodes({
                 rightNodes: rightNodes,
                 leftNodes: leftNodes
             })
+            console.log(syncLeftNodes, syncRightNodes)
             const {baseEdges, leftEdges, rightEdges} = generateEdges(baseNodes, syncLeftNodes, syncRightNodes);
-
             const [layoutNodesLeft, layoutEdgesLeft] = getLayoutElements(
                 syncLeftNodes,
                 leftEdges,
                 "LR",
-                "UL",
+                "DL",
                 dagreGraphLeft,
                 0
             );
