@@ -199,6 +199,7 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
                     type: 'floating',
                     sourceHandle: "d",
                     targetHandle: "b",
+                    animated: true,
                 });
             }
         })
@@ -216,6 +217,7 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
                     type: 'floating',
                     sourceHandle: "d",
                     targetHandle: "b",
+                    animated: true,
                 });
             }
         })
