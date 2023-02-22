@@ -1,16 +1,17 @@
 import ComponentWithStyle from "./styles";
-import {Card, Loading, Text} from "@nextui-org/react";
+import { Card, Loading, Text } from "@nextui-org/react";
 import FormProvider from "@/shared/components/form/provider";
 import TextField from "@/shared/components/form/text-field";
 import TextareaField from "@/shared/components/form/textarea";
 import Button from "@/shared/components/button";
 import useCreateFlow from "@/modules/new-flow/hooks/create-flow";
-
+import { OPEN_AI_TOKEN } from "@/shared/constants/config"
 const FormNewRoadMap = () => {
     const hookCreateFlow = useCreateFlow();
     const submitForm = (values) => {
-        hookCreateFlow.action({textOrder: values.textOrder, token: values.token})
+        hookCreateFlow.action({ textOrder: values.textOrder, token: values?.token })
     }
+    const showToken = OPEN_AI_TOKEN != null
     return (
         <ComponentWithStyle>
             <Card className="card">
@@ -19,22 +20,27 @@ const FormNewRoadMap = () => {
                 </Text>
                 <FormProvider
                     returnToParent={false}
-                    defaultValues={{token: '', textOrder: ''}}
+                    defaultValues={{ token: null, textOrder: '' }}
                     onSubmit={async (values) => {
                         submitForm(values);
                     }}
                 >
                     <div className="formContainer">
-                        <TextField
-                            type={'token'}
-                            label="token"
-                            fullWidth
-                            clearable
-                            bordered
-                            name="token"
-                        />
+                        {
+                            showToken &&
+                            <TextField
+                                key="token"
+                                type={'token'}
+                                label="token"
+                                fullWidth
+                                clearable
+                                bordered
+                                name="token"
+                            />
+                        }
                         <TextareaField
                             rows={6}
+                            key="description"
                             type={'text'}
                             label="description"
                             fullWidth
@@ -49,7 +55,7 @@ const FormNewRoadMap = () => {
                             type="submit"
                         >
                             {hookCreateFlow.status === 'loading' &&
-                                <Loading type="points" color="currentColor" size="sm"/>
+                                <Loading type="points" color="currentColor" size="sm" />
                             }
                             {hookCreateFlow.status !== 'loading' &&
                                 <>Generate</>

@@ -7,22 +7,22 @@ import services from '../services';
 const useCreateFlow = () => {
     const router = useRouter();
     const [status, setStatus] = useState('idle');
-    
+
     const afterCreateFlow = (_id) => {
         const flowUrlPage = makeUrl(LINKS.ROADMAP, { id: _id });
         router.push(flowUrlPage);
     }
 
-    const action = ({token, textOrder}) => {
+    const action = ({ token, textOrder }) => {
         setStatus('loading');
-        services.createFlow({token, textOrder}).then(res=> {
+        services.createFlow({ token: token != "" ? token : null, textOrder }).then(res => {
             setStatus('done');
             afterCreateFlow(res.data.code);
-        }).catch(err=> {
+        }).catch(err => {
             setStatus('idle');
         })
     }
-    
+
     return {
         action,
         status,
