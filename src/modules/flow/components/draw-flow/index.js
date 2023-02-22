@@ -192,7 +192,7 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
                     source: _node.id,
                     target: _leftNode.id,
                     data: {
-                        locked: false,
+                        locked: true,
                         level: _node.level,
                         clone: !!_leftNode?.clone,
                     },
@@ -210,13 +210,13 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
                     source: _node.id,
                     target: _rightNode.id,
                     data: {
-                        locked: false,
+                        locked: true,
                         level: _node.level,
                         clone: !!_rightNode?.clone,
                     },
                     type: 'floating',
-                    sourceHandle: "d",
-                    targetHandle: "b",
+                    sourceHandle: "b",
+                    targetHandle: "d",
                     animated: true,
                 });
             }
