@@ -5,7 +5,7 @@ export const defaultTheme = createTheme({
     theme: {
       colors: {
         background: '#000',
-        primary: "#010E18",
+        primary: "#000",
         secondary: "",
         primaryText: '#fff',
         borderColor: "#001E38",

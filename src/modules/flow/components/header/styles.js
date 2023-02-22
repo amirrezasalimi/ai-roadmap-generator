@@ -5,7 +5,7 @@ export const ComponentWithStyle = styled('div', {
     zIndex: 10,
     width: "100%",
     position: "fixed",
-    background: "#0A0A0A",
+    background: "#171717",
     ".main": {
         flex: 1,
         height: 'fit-content',

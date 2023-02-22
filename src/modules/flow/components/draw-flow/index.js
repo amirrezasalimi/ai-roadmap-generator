@@ -469,7 +469,7 @@ function DrawFlow({data}) {
                     nodes={nodes}
                     fitView
                     onInit={(instance) => {
-                        instance.setViewport({y: Math.abs(firstNode.position.y) + 100 })
+                        instance.setViewport({y: Math.abs(firstNode.position.y)  })
                     }}
                     fitViewOptions={{
                         zoom: 2
