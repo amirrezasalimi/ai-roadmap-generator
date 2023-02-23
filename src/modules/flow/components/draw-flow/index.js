@@ -8,8 +8,9 @@ import 'reactflow/dist/style.css';
 import styles from './styles.module.css';
 import CustomNode from "@/modules/flow/components/custom-node";
 import FloatingEdge from "@/modules/flow/components/floating-edge";
-import { useEffect } from "react";
+import {useEffect} from "react";
 import mobileAndTabletCheck from "@/shared/helper/mobile-and-tablet-check";
+import Logo from "@/shared/components/logo";
 
 const nodeTypes = {
     custom: CustomNode
@@ -67,10 +68,10 @@ const dataToDataNode = async (nodes) => {
                 clone: !!nodeIsClone,
                 level: _node.level,
                 label:
-                    nodeIsClone? "" :
-                    <div>
-                        {_node.title}
-                    </div>
+                    nodeIsClone ? "" :
+                        <div>
+                            {_node.title}
+                        </div>
             },
             level: _node.level,
             clone: !!nodeIsClone,
@@ -90,14 +91,16 @@ const getClone = (nodesIds, data, clone) => {
     let children = [];
     const _clone = [...clone];
     nodesIds.forEach(_ne => {
-        _clone.push({...data.find((_df => _df.id === _ne)), clone: true,  data: {
+        _clone.push({
+            ...data.find((_df => _df.id === _ne)), clone: true, data: {
                 clone: true,
                 level: _ne.level,
                 label:
                     <div>
 
                     </div>
-            }, });
+            },
+        });
         children.push(...data.filter(_df => _df.parent === _ne))
     })
 
@@ -149,7 +152,7 @@ const generateNodes = async (data) => {
             }
         }
     }
-    otherNodes = otherNodes.sort((a, b)=> (a.parent - b.parent));
+    otherNodes = otherNodes.sort((a, b) => (a.parent - b.parent));
 
     for await (let d of otherNodes) {
         const parentInRight = rightNodes.find(fd => fd.id === d.parent);
@@ -162,9 +165,9 @@ const generateNodes = async (data) => {
         }
     }
     return {
-        baseNodes: await dataToDataNode(baseNodes.sort((a, b)=> (a.parent - b.parent))),
-        rightNodes: await dataToDataNode(rightNodes.sort((a, b)=> (a.parent - b.parent))),
-        leftNodes: await dataToDataNode(leftNodes.sort((a, b)=> (a.parent - b.parent))),
+        baseNodes: await dataToDataNode(baseNodes.sort((a, b) => (a.parent - b.parent))),
+        rightNodes: await dataToDataNode(rightNodes.sort((a, b) => (a.parent - b.parent))),
+        leftNodes: await dataToDataNode(leftNodes.sort((a, b) => (a.parent - b.parent))),
     }
 };
 
@@ -186,7 +189,7 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
             targetHandle: "b",
         });
         _leftNodes.forEach((_leftNode, _index) => {
-            if(_node.id === _leftNode.parentId){
+            if (_node.id === _leftNode.parentId) {
                 baseEdges.push({
                     id: String(placeholderEdgeId + "base-to-left-" + _index),
                     source: _node.id,
@@ -204,7 +207,7 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
             }
         })
         _rightNodes.forEach((_rightNode, _index) => {
-            if(_node.id === _rightNode.parentId){
+            if (_node.id === _rightNode.parentId) {
                 baseEdges.push({
                     id: String(placeholderEdgeId + "base-to-right-" + _index),
                     source: _node.id,
@@ -223,8 +226,8 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
         })
     });
     let leftEdges = _leftNodes.filter(_n => !_baseNodes.find(_bn => _bn.numberId === _n.numberParentId)).map((_node, _index) => ({
-        id: String(placeholderEdgeId+ "left-" + _index),
-        source:  _node.id,
+        id: String(placeholderEdgeId + "left-" + _index),
+        source: _node.id,
         target: _node.parentId,
         type: 'floating',
         data: {
@@ -238,7 +241,7 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
     }));
 
     let rightEdges = _rightNodes.filter(_n => !_baseNodes.find(_bn => _bn.numberId === _n.numberParentId)).map((_node, _index) => ({
-        id: String(placeholderEdgeId+ "right-" + _index),
+        id: String(placeholderEdgeId + "right-" + _index),
         source: _node.id,
         target: _node.parentId,
         type: 'floating',
@@ -251,6 +254,8 @@ const generateEdges = (_baseNodes, _leftNodes, _rightNodes) => {
         sourceHandle: "d",
         targetHandle: "b",
     }));
+
+
     return {
         baseEdges,
         rightEdges: rightEdges,
@@ -302,6 +307,7 @@ const getLayoutElements = (_nodes, _edges, _direction, _align, dagreGraph, offse
 
 const getLayoutElementsBase = (_nodes, _edges, _offset, children) => {
     let previousNodesLastPosition = -117;
+    let lastPreviousNodesLastPosition = 0;
     _nodes.forEach((node, index) => {
         node.targetPosition = 'bottom';
         node.sourcePosition = 'top';
@@ -312,15 +318,23 @@ const getLayoutElementsBase = (_nodes, _edges, _offset, children) => {
         if (index === 0) {
             node.position = {
                 x: _offset - 104,
-                y:  previousNodesLastPosition - 100,
+                y: previousNodesLastPosition - 100,
             };
         } else {
-            node.position = {
-                x: (0 + _offset),
-                y: previousNodesLastPosition  + spaceBetweenMainBlock + nodeHeight - 8.5,
-            };
+            if (lastPreviousNodesLastPosition === previousNodesLastPosition) {
+                node.position = {
+                    x: (0 + _offset),
+                    y: previousNodesLastPosition + spaceBetweenMainBlock + nodeHeight - 8.5 + 117,
+                };
+            } else {
+                node.position = {
+                    x: (0 + _offset),
+                    y: previousNodesLastPosition + spaceBetweenMainBlock + nodeHeight - 8.5,
+                };
+            }
+            lastPreviousNodesLastPosition = previousNodesLastPosition;
         }
-        return node;
+
     });
     return [_nodes, _edges];
 };
@@ -336,7 +350,6 @@ const findLastPosition = (parentId, lastPosition, data) => {
         initialValue
     );
 
-
     if (bigger?.parentId && lastPosition < bigger?.position?.y) {
         return findLastPosition(bigger.id, bigger.position?.y, data)
     } else {
@@ -348,18 +361,20 @@ const syncNodes = ({rightNodes, leftNodes}) => {
     const syncRightNodes = [...rightNodes];
     const syncLeftNodes = [...leftNodes];
 
-    syncRightNodes.forEach((_node, index) => {
+    const biggerSide = rightNodes.length > leftNodes.length ? syncRightNodes : syncLeftNodes;
+
+    biggerSide.forEach((_node, index) => {
         const currentLeftNode = syncLeftNodes[index];
         const currentRightNode = syncRightNodes[index];
         const leftChildren = syncLeftNodes.filter(_nf => _nf.numberParentId === syncLeftNodes[index]?.numberId);
         const rightChildren = syncRightNodes.filter(_nf => _nf.numberParentId === syncRightNodes[index]?.numberId);
         if (leftChildren.length < rightChildren.length) {
             const difference = rightChildren.length - leftChildren.length;
-            for (let i = 1; i <= difference; i++) {
-                const index = rightChildren.findIndex(_fn=> _fn.id === rightChildren?.[rightChildren.length - i]?.id);
-                const currentNodeChild = rightChildren[index];
+            for (let i = 0; i < difference; i++) {
+                const index = syncRightNodes.findIndex(_fn => _fn.id === rightChildren?.[leftChildren.length + i].id);
+                const currentNodeChild = syncRightNodes[index];
                 const nodeData = {
-                    id: String(placeholderNodeIdClone+currentNodeChild.numberId),
+                    id: String(placeholderNodeIdClone + currentNodeChild.numberId),
                     numberId: currentNodeChild.numberId,
                     data: {
                         clone: true,
@@ -377,16 +392,16 @@ const syncNodes = ({rightNodes, leftNodes}) => {
                     "targetPosition": "right",
                     "sourcePosition": "left"
                 }
-                syncLeftNodes.splice(difference, 0, nodeData);
+                syncLeftNodes.splice(index, 0, nodeData);
             }
         }
-        else if (rightChildren.length < leftChildren.length) {
-            const difference =  leftChildren.length - rightChildren.length;
+        if (rightChildren.length < leftChildren.length) {
+            const difference = leftChildren.length - rightChildren.length;
             for (let i = 0; i < difference; i++) {
-                const index = syncRightNodes.findIndex(_fn=> _fn.id === rightChildren?.[rightChildren.length - 1].id) || 0;
-                const currentNodeChild = syncRightNodes[index];
+                const index = syncLeftNodes.findIndex(_fn => _fn.id === leftChildren?.[rightChildren.length + i].id);
+                const currentNodeChild = syncLeftNodes[index];
                 const nodeData = {
-                    id: String(placeholderNodeIdClone+currentNodeChild.numberId),
+                    id: String(placeholderNodeIdClone + currentNodeChild.numberId),
                     numberId: currentNodeChild.numberId,
                     data: {
                         clone: true,
@@ -404,13 +419,39 @@ const syncNodes = ({rightNodes, leftNodes}) => {
                     "targetPosition": "left",
                     "sourcePosition": "right"
                 }
-                syncRightNodes.splice(difference, 0, nodeData);
+                syncRightNodes.splice(index, 0, nodeData);
             }
         }
     })
+
     return {
         syncLeftNodes,
         syncRightNodes
+    }
+}
+
+const sortingNodes = async ({rightNodes, leftNodes}) => {
+    const sortedRightNodes = [];
+    const sortedLeftNodes = [];
+    rightNodes.forEach((_node) => {
+        if (_node.level === 2) {
+            sortedRightNodes.push(_node);
+        } else {
+            const index = sortedRightNodes.findIndex(_fi => _node.parentId === _fi.id);
+            sortedRightNodes.splice(index + 1, 0, _node);
+        }
+    })
+    leftNodes.forEach((_node) => {
+        if (_node.level === 2) {
+            sortedLeftNodes.push(_node);
+        } else {
+            const index = sortedLeftNodes.findIndex(_fi => _node.parentId === _fi.id);
+            sortedLeftNodes.splice(index + 1, 0, _node);
+        }
+    })
+    return {
+        sortedRightNodes,
+        sortedLeftNodes
     }
 }
 
@@ -421,17 +462,17 @@ function DrawFlow({data}) {
     useEffect(() => {
         (async function () {
             const {baseNodes, leftNodes, rightNodes} = await generateNodes(data);
-
-            // const syncLeftNodes = leftNodes;
-            // const syncRightNodes = rightNodes;
-            const { syncLeftNodes, syncRightNodes } = syncNodes({
+            const {syncLeftNodes, syncRightNodes} = syncNodes({
                 rightNodes: rightNodes,
                 leftNodes: leftNodes
             })
-            console.log(syncLeftNodes, syncRightNodes)
-            const {baseEdges, leftEdges, rightEdges} = generateEdges(baseNodes, syncLeftNodes, syncRightNodes);
+            const {sortedLeftNodes, sortedRightNodes} = await sortingNodes({
+                rightNodes: syncRightNodes,
+                leftNodes: syncLeftNodes
+            })
+            const {baseEdges, leftEdges, rightEdges} = generateEdges(baseNodes, sortedLeftNodes, sortedRightNodes);
             const [layoutNodesLeft, layoutEdgesLeft] = getLayoutElements(
-                syncLeftNodes,
+                sortedLeftNodes,
                 leftEdges,
                 "LR",
                 "DL",
@@ -440,7 +481,7 @@ function DrawFlow({data}) {
             );
 
             const [layoutNodesRight, layoutEdgesRight] = getLayoutElements(
-                syncRightNodes,
+                sortedRightNodes,
                 rightEdges,
                 "RL",
                 "DL",
@@ -469,7 +510,7 @@ function DrawFlow({data}) {
                     nodes={nodes}
                     fitView
                     onInit={(instance) => {
-                        instance.setViewport({y: Math.abs(firstNode.position.y)  })
+                        instance.setViewport({y: Math.abs(firstNode.position.y)})
                     }}
                     fitViewOptions={{
                         zoom: 2
