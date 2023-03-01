@@ -17,7 +17,7 @@ const RecentRoadMap = () => {
         <ComponentWithStyle>
             <Card className={'card'}>
                 <Text size={16} weight={"800"}>
-                    Recent RoadMap List
+                    Recent Roadmaps
                 </Text>
                 <div className={"list"}>
                     {
