@@ -6,6 +6,7 @@ import TextareaField from "@/shared/components/form/textarea";
 import Button from "@/shared/components/button";
 import useCreateFlow from "@/modules/new-flow/hooks/create-flow";
 import { OPEN_AI_TOKEN } from "@/shared/constants/config"
+import WaitingProgress from "../progress";
 const FormNewRoadMap = () => {
     const hookCreateFlow = useCreateFlow();
     const submitForm = (values) => {
@@ -16,7 +17,7 @@ const FormNewRoadMap = () => {
         <ComponentWithStyle>
             <Card className="card">
                 <Text size={16} color="$secondaryText">
-                    Enter the relevant token and your content to draw automatically.
+                    Enter Description for your Roadmap , in details
                 </Text>
                 <FormProvider
                     returnToParent={false}
@@ -48,19 +49,26 @@ const FormNewRoadMap = () => {
                             bordered
                             name="textOrder"
                         />
-                        <Button
-                            className="submitButton"
-                            size={"lg"}
-                            disabled={hookCreateFlow.status === 'loading'}
-                            type="submit"
-                        >
-                            {hookCreateFlow.status === 'loading' &&
-                                <Loading type="points" color="currentColor" size="sm" />
+                        <div>
+                            <Button
+                                fullWidth
+                                className="submitButton"
+                                size={"lg"}
+                                disabled={hookCreateFlow.status === 'loading'}
+                                type="submit"
+                            >
+                                {hookCreateFlow.status === 'loading' &&
+                                    <Loading type="points" color="currentColor" size="sm" />
+                                }
+                                {hookCreateFlow.status !== 'loading' &&
+                                    <>Generate</>
+                                }
+                            </Button>
+                            {
+                                hookCreateFlow.status == "loading" &&
+                                <WaitingProgress wait={60 * 2.5} /> // 2.5 min
                             }
-                            {hookCreateFlow.status !== 'loading' &&
-                                <>Generate</>
-                            }
-                        </Button>
+                        </div>
                     </div>
                 </FormProvider>
             </Card>

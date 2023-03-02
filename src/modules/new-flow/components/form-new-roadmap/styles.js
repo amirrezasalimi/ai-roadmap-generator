@@ -17,8 +17,10 @@ export const ComponentWithStyle = styled('div', {
         }
     },
     '.submitButton': {
+        width: "100%",
         background: '$gradient',
         boxShadow: '',
+        mb: "$2"
     },
 });
 
