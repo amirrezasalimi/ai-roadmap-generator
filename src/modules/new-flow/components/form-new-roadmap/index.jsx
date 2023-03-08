@@ -66,7 +66,7 @@ const FormNewRoadMap = () => {
                             </Button>
                             {
                                 hookCreateFlow.status == "loading" &&
-                                <WaitingProgress wait={60 * 2.5} /> // 2.5 min
+                                <WaitingProgress wait={60 * 1.5} /> // min
                             }
                         </div>
                     </div>
