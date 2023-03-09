@@ -16,9 +16,10 @@ const Logo = (props) => {
                       weight="bold"
                       css={{
                           textGradient: "$gradientText",
+                          ml:"$4"
                       }}
                       span>
-                      Generator
+                       Generator
                   </Text>
               </Text>
           </Link>
