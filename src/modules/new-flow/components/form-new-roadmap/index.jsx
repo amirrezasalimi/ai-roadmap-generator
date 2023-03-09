@@ -13,11 +13,26 @@ const FormNewRoadMap = () => {
         hookCreateFlow.action({ textOrder: values.textOrder, token: values?.token })
     }
     const showToken = OPEN_AI_TOKEN != null
+
+    const examples = [
+        "ex: how to learn to lucid dreaming",
+        "ex: how to learn x",
+        "ex: how to learn cook pizza",
+        "ex: how to cook pizza",
+        "ex: basic of math",
+        "ex: how to be better person",
+        "ex: how to keep hydrated",
+        "ex: make good relationships",
+        "ex: learn javascript",
+        "ex: how to start meditation everyday",
+        "ex: basic of mindfulness",
+    ]
+    const example = examples[Math.floor(Math.random()*examples.length)];
     return (
         <ComponentWithStyle>
             <Card className="card">
                 <Text size={16} color="$secondaryText">
-                    Enter Description for your Roadmap , in details
+                    Enter description for your roadmap in details
                 </Text>
                 <FormProvider
                     returnToParent={false}
@@ -41,6 +56,7 @@ const FormNewRoadMap = () => {
                         }
                         <TextareaField
                             rows={6}
+                            placeholder={example}
                             key="description"
                             type={'text'}
                             label="description"
