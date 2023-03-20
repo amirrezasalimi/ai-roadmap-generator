@@ -1,15 +1,15 @@
 import { useState } from "react";
 import services from '../services';
 
-const useGetRecentRoadMap = () => {
+const useGetRecentRoadmap = () => {
     const [status, setStatus] = useState('idle');
     const [data, setData] = useState([]);
     const action = () => {
         setStatus('loading');
-        services.getRecentRoadMapList().then(res=> {
+        services.getRecentRoadmapList().then(res=> {
             setStatus('done');
             setData(res.data.items);
-        }).catch(err=> {
+        }).catch(_err=> {
             setStatus('idle');
         })
     }
@@ -21,4 +21,4 @@ const useGetRecentRoadMap = () => {
     }
 }
 
-export default useGetRecentRoadMap;
+export default useGetRecentRoadmap;

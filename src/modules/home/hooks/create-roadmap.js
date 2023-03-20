@@ -4,21 +4,21 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import services from '../services';
 
-const useCreateFlow = () => {
+const useCreateRoadmap = () => {
     const router = useRouter();
     const [status, setStatus] = useState('idle');
 
-    const afterCreateFlow = (_id) => {
-        const flowUrlPage = makeUrl(LINKS.ROADMAP, { id: _id });
-        router.push(flowUrlPage);
+    const afterCreateRoadmap = (_id) => {
+        const roadmapUrlPage = makeUrl(LINKS.ROADMAP, { id: _id });
+        router.push(roadmapUrlPage);
     }
 
     const action = ({ token, textOrder }) => {
         setStatus('loading');
-        services.createFlow({ token: token != "" ? token : null, textOrder }).then(res => {
+        services.createRoadmap({ token: token !== "" ? token : null, textOrder }).then(res => {
             setStatus('done');
-            afterCreateFlow(res.data.code);
-        }).catch(err => {
+            afterCreateRoadmap(res.data.code);
+        }).catch(_err => {
             setStatus('idle');
         })
     }
@@ -29,4 +29,4 @@ const useCreateFlow = () => {
     }
 }
 
-export default useCreateFlow;
+export default useCreateRoadmap;
