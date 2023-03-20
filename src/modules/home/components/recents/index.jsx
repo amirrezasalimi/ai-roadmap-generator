@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import makeUrl from "@/shared/helper/make-url";
 import {LINKS} from "@/shared/constants/links";
-import useGetRecentRoadMap from "@/modules/new-flow/hooks/get-recent-roadmap";
 import {useEffect} from "react";
+import useGetRecentRoadmap from "@/modules/home/hooks/get-recent-roadmap";
 
 const RecentRoadMap = () => {
-    const hookGetRecentRoadMap = useGetRecentRoadMap();
+    const hookGetRecentRoadmap = useGetRecentRoadmap();
     useEffect(()=> {
-        hookGetRecentRoadMap.action();
+        hookGetRecentRoadmap.action();
     },[]);
 
     return (
@@ -21,14 +21,14 @@ const RecentRoadMap = () => {
                 </Text>
                 <div className={"list"}>
                     {
-                        hookGetRecentRoadMap.status === "loading" &&
+                        hookGetRecentRoadmap.status === "loading" &&
                         <Row justify={"center"}>
                             <Loading color={"secondary"}/>
                         </Row>
                     }
                     {
-                        hookGetRecentRoadMap.status === "done" &&
-                        hookGetRecentRoadMap?.data?.map((item)=> (
+                        hookGetRecentRoadmap.status === "done" &&
+                        hookGetRecentRoadmap?.data?.map((item)=> (
                             <Link target={'_blank'} key={`recent-roadmap-item-${item.code}`} href={makeUrl(LINKS.ROADMAP, {id: item.code})}>
                                 <div className={"item"}>
                                     <Image className={"icon"} alt="github" height={25} width={25} src={'link.svg'}/>

@@ -1,33 +1,36 @@
 import ComponentWithStyle from "./styles";
-import { Card, Loading, Text } from "@nextui-org/react";
+import {Card, Loading, Text} from "@nextui-org/react";
 import FormProvider from "@/shared/components/form/provider";
 import TextField from "@/shared/components/form/text-field";
 import TextareaField from "@/shared/components/form/textarea";
 import Button from "@/shared/components/button";
-import useCreateFlow from "@/modules/new-flow/hooks/create-flow";
-import { OPEN_AI_TOKEN } from "@/shared/constants/config"
+import {OPEN_AI_TOKEN} from "@/shared/constants/config"
 import WaitingProgress from "../progress";
-const FormNewRoadMap = () => {
-    const hookCreateFlow = useCreateFlow();
+import useCreateRoadmap from "@/modules/home/hooks/create-roadmap";
+
+
+const examples = [
+    "ex: how to learn to lucid dreaming",
+    "ex: how to learn x",
+    "ex: how to learn cook pizza",
+    "ex: how to cook pizza",
+    "ex: basic of math",
+    "ex: how to be better person",
+    "ex: how to keep hydrated",
+    "ex: make good relationships",
+    "ex: learn javascript",
+    "ex: how to start meditation everyday",
+    "ex: basic of mindfulness",
+]
+
+
+const FormNewRoadmap = () => {
+    const hookCreateRoadmap = useCreateRoadmap();
     const submitForm = (values) => {
-        hookCreateFlow.action({ textOrder: values.textOrder, token: values?.token })
+        hookCreateRoadmap.action({textOrder: values.textOrder, token: values?.token})
     }
     const showToken = OPEN_AI_TOKEN != null
-
-    const examples = [
-        "ex: how to learn to lucid dreaming",
-        "ex: how to learn x",
-        "ex: how to learn cook pizza",
-        "ex: how to cook pizza",
-        "ex: basic of math",
-        "ex: how to be better person",
-        "ex: how to keep hydrated",
-        "ex: make good relationships",
-        "ex: learn javascript",
-        "ex: how to start meditation everyday",
-        "ex: basic of mindfulness",
-    ]
-    const example = examples[Math.floor(Math.random()*examples.length)];
+    const example = examples[Math.floor(Math.random() * examples.length)];
     return (
         <ComponentWithStyle>
             <Card className="card">
@@ -36,7 +39,7 @@ const FormNewRoadMap = () => {
                 </Text>
                 <FormProvider
                     returnToParent={false}
-                    defaultValues={{ token: null, textOrder: '' }}
+                    defaultValues={{token: null, textOrder: ''}}
                     onSubmit={async (values) => {
                         submitForm(values);
                     }}
@@ -70,19 +73,19 @@ const FormNewRoadMap = () => {
                                 fullWidth
                                 className="submitButton"
                                 size={"lg"}
-                                disabled={hookCreateFlow.status === 'loading'}
+                                disabled={hookCreateRoadmap.status === 'loading'}
                                 type="submit"
                             >
-                                {hookCreateFlow.status === 'loading' &&
-                                    <Loading type="points" color="currentColor" size="sm" />
+                                {hookCreateRoadmap.status === 'loading' &&
+                                    <Loading type="points" color="currentColor" size="sm"/>
                                 }
-                                {hookCreateFlow.status !== 'loading' &&
+                                {hookCreateRoadmap.status !== 'loading' &&
                                     <>Generate</>
                                 }
                             </Button>
                             {
-                                hookCreateFlow.status == "loading" &&
-                                <WaitingProgress wait={60 * 1.5} /> // min
+                                hookCreateRoadmap.status === "loading" &&
+                                <WaitingProgress wait={60 * 1.5}/> // min
                             }
                         </div>
                     </div>
@@ -91,4 +94,4 @@ const FormNewRoadMap = () => {
         </ComponentWithStyle>
     )
 };
-export default FormNewRoadMap;
+export default FormNewRoadmap;
