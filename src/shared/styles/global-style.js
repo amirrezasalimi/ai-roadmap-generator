@@ -8,7 +8,9 @@ const globalStyles = globalCss({
         padding: "16px !important",
         borderRadius: "10px !important",
         height: "100% !important",
-        background: "#000F1C !important"
+        border: `2px solid #343434`,
+        borderWidth: "2px !important",
+        background: "$paper !important"
     },
     '.react-flow__attribution': {
         background: "$background !important"
