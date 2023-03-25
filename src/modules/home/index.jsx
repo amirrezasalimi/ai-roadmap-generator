@@ -1,12 +1,13 @@
 import Button from "@/shared/components/button";
-import { Row, Text, Grid, Spacer } from "@nextui-org/react";
+import {Row, Text, Grid, Spacer, Container} from "@nextui-org/react";
 import Image from "next/image";
 import ComponentWithStyle from "./styles";
 import Logo from "@/shared/components/logo";
 import Link from "next/link";
 import APP from "@/shared/constants/app";
-import FormNewRoadMap from "./components/form-new-roadmap";
-import RecentRoadMap from "./components/recents";
+import FormNewRoadmap from "./components/form-new-roadmap";
+import RecentRoadmap from "./components/recents";
+import Categories from "@/modules/home/components/categories";
 
 const Home = () => {
     const isBrowser = typeof window != "undefined"
@@ -17,26 +18,22 @@ const Home = () => {
                 <Logo size={"lg"} />
             </Row>
             <Spacer y={2} />
-            <Grid.Container className={'note'}>
+            <Container>
+            <Grid.Container className={'categories'}>
                 <Grid xs={12} sm={10} md={8} lg={6} xl={5} display="flex" direction="column" justify="center">
-                    <div className={"card"}>
-                        <Text className={"hint"}>
-                            We are using Open Ai GPT and do not refer to its data scientifically. The data is only
-                            collected by artificial intelligence.
-                        </Text>
-                    </div>
+                    <Categories />
                 </Grid>
             </Grid.Container>
             <Spacer y={1} />
             <Grid.Container className={'content'}>
                 <Grid xs={12} sm={5} md={4} lg={3} xl={2.5} display="flex" justify="center">
                     <div className={'box'}>
-                        {isBrowser && <FormNewRoadMap />}
+                        {isBrowser && <FormNewRoadmap />}
                     </div>
                 </Grid>
                 <Grid xs={12} sm={5} md={4} lg={3} xl={2.5} display="flex" justify="center">
                     <div className={'box'}>
-                        <RecentRoadMap />
+                        <RecentRoadmap />
                     </div>
                 </Grid>
             </Grid.Container>
@@ -55,8 +52,13 @@ const Home = () => {
                 </Link>
             </Row>
             <Spacer y={2} />
-            <div className="gradient1" />
-            <div className="gradient2" />
+            <Text className={"note"}>
+                We are using Open Ai GPT and do not refer to its data scientifically. The data is only collected by artificial intelligence.
+            </Text>
+            <Spacer y={2} />
+            {/*<div className="gradient1" />*/}
+            {/*<div className="gradient2" />*/}
+            </Container>
         </ComponentWithStyle>
     )
 };

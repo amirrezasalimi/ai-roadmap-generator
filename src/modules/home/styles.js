@@ -8,9 +8,9 @@ export const ComponentWithStyle = styled('div', {
     justifyContent: "center",
     "@sm": {
         padding: 0,
-        height: `100vh`,
+        minHeight: `100vh`,
     },
-    '.note': {
+    '.categories': {
         alignContent: "center",
         justifyContent: "center",
     },
@@ -18,20 +18,14 @@ export const ComponentWithStyle = styled('div', {
         gap: 12,
         alignContent: "center",
         justifyContent: "center",
-        "@sm": {
-            paddingInline: 12,
-        },
     },
-    '.hint': {
+    '.title': {
         color: '$secondaryText'
     },
     '.box': {
         margin: 'auto',
         width: '100%',
         height: '420px'
-    },
-    '.icon': {
-        marginRight: 12
     },
 
     '.buttonLinkContainer': {
@@ -41,7 +35,10 @@ export const ComponentWithStyle = styled('div', {
         "& button": {
             maxWidth: 188,
             flex: 1,
-        }
+        },
+        '.icon': {
+            marginRight: 12
+        },
     },
     '.gradient1': {
         "@md": {
@@ -69,6 +66,13 @@ export const ComponentWithStyle = styled('div', {
            pointerEvents: "none"
        }
     },
+    '.note': {
+        margin: 'auto',
+        color: '#515151',
+        padding: 12,
+        fontSize: 16,
+        textAlign: "center"
+    }
 });
 
 export default ComponentWithStyle;
