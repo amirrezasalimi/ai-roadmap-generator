@@ -22,7 +22,7 @@ const Categories = () => {
                         Categories
                     </Text>
                     <Link href={LINKS.CATEGORIES}>
-                        <Button color={"primary"} bordered>
+                        <Button color={"default"} bordered>
                             <Image className={"seeAll"} alt="see all" height={20} width={20} src={'/eye.svg'} />
                             See All
                         </Button>

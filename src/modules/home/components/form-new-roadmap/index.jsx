@@ -34,7 +34,7 @@ const FormNewRoadmap = () => {
     return (
         <ComponentWithStyle>
             <Card className="card">
-                <Text size={16} color="$secondaryText">
+                <Text size={16}>
                     Enter description for your roadmap in details
                 </Text>
                 <FormProvider
