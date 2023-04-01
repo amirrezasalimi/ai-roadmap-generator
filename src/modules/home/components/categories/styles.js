@@ -44,18 +44,15 @@ export const ComponentWithStyle = styled('div', {
                 }
             }
         },
-
         "&::-webkit-scrollbar": {
             width: 4,
             height: 4
         },
-
         "&::-webkit-scrollbar-track": {
             background: "unset"
         },
-
         "&::-webkit-scrollbar-thumb": {
-            background: "#1A1A25",
+            background: "#343434",
             borderRadius: 8
         },
         "&::-webkit-scrollbar-thumb:hover": {

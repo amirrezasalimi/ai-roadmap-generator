@@ -13,7 +13,7 @@ export const ComponentWithStyle = styled('div', {
         justifyContent: 'space-between',
         flexDirection: 'column',
         "& label": {
-            color: '$tertiaryText'
+
         }
     },
     '.submitButton': {
