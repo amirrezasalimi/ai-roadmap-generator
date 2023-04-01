@@ -7,10 +7,15 @@ const Button = styled(NextButton, {
       minWidth: 'unset !important',
       variants: {
           color: {
+              default: {
+                  background: "#141414",
+                  borderColor: "$borderColor",
+                  color: "#C5C5C5",
+              },
               primary: {
                   borderColor: "$borderColor",
                   color: "#fff",
-              }
+              },
           },
           bordered: {
               true: {

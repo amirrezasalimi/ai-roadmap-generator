@@ -20,7 +20,7 @@ export const ComponentWithStyle = styled('div', {
         justifyContent: "center",
     },
     '.title': {
-        color: '$secondaryText'
+
     },
     '.box': {
         margin: 'auto',

@@ -12,25 +12,6 @@ export const ComponentWithStyle = styled('div', {
         overflowX: "hidden",
         gap: 12,
         paddingRight: 6,
-        "a": {
-            width: "100%",
-        },
-        ".item": {
-            padding: 8,
-            alignItems: "center",
-            textAlign: "center",
-            width: "100%",
-            border: "2px solid #1A1A25",
-            borderRadius: 8,
-            display: "flex",
-            ".icon": {
-                marginRight: 8
-            },
-            ".text": {
-                textAlign: "justify",
-                color: "$secondaryText"
-            }
-        },
 
         "&::-webkit-scrollbar": {
             width: 4,
@@ -41,7 +22,7 @@ export const ComponentWithStyle = styled('div', {
         },
 
         "&::-webkit-scrollbar-thumb": {
-            background: "#1A1A25",
+            background: "#343434",
             borderRadius: 8
         },
         "&::-webkit-scrollbar-thumb:hover": {
