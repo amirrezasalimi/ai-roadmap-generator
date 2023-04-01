@@ -3,24 +3,22 @@ import cacheData from "memory-cache";
 
 export default async function handler(req, res) {
     try {
-        const cacheKey = "roadmap/recents"
-        const recents = cacheData.get(cacheKey);
-        if (recents) {
+        const cacheKey = "roadmap/categories"
+        let data = cacheData.get(cacheKey);
+        if (data) {
             return res.status(200).json({
                 ok: true,
-                data: recents
+                data
             })
         }
-        let list = await backendServices.getRecents();
-        // remove data cuz its large json
-        list.items = list.items.map(item => ({ ...item, data: null }))
+        data = await backendServices.getCategories();
         // cache
-        const cacheTime = 1000 * 60; // 1 min cache
-        cacheData.put(cacheKey, list, cacheTime);
+        const cacheTime = 1000 * 60 * 10; // 10 min cache
+        cacheData.put(cacheKey, data, cacheTime);
         // 
         return res.status(200).json({
             ok: true,
-            data: list
+            data
         })
     } catch (e) {
         return res.status(500).json({
