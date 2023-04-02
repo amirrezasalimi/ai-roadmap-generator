@@ -18,7 +18,7 @@ const RecentItem = ( { roadmap }) => {
                         </Text>
                     </div>
                     <div className={"details"}>
-                        <Badge size={"xs"} isSquared color={"primary"} variant={"flat"}>
+                        <Badge className={"category"} size={"xs"} isSquared color={"primary"} variant={"flat"}>
                             Software development
                         </Badge>
                         <div className={"counters"}>
