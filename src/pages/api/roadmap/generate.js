@@ -1,5 +1,5 @@
+import { backendServices } from "@/backend/services/services";
 import openAiInstance from "@/shared/helper/openai";
-import pocketbaseInstance from "@/shared/helper/pocketbase";
 
 export default async function handler(req, res) {
   const title = req.query.title;
@@ -16,38 +16,51 @@ export default async function handler(req, res) {
     })
   }
   let isFinished = false
-  //  make minimum ${eachLevelItemsCount} items in first ${maximumLevels} levels
-  const basePrompt = `create a roadmap for '${title}'
-roles:
-- minimum ${minLevels} level
-- level 1 should has minimum 3 items
+  const cats = await backendServices.getCategories();
+  const categoriesList = cats.items.map(item => item.title).join(" | ")
 
-- minimum ${minItems} items
-- maximum ${maxItems} items
-- when you finished send @finish in end of prompt result not json
+  const findCatId = (title) => cats.items.find(item => item.title == title.trim()).id
+  //  make minimum ${eachLevelItemsCount} items in first ${maximumLevels} levels
+  const basePrompt = `based on my prompt , make up to date roadmap
+important response rules :
+- collapse response in one line , remove space and new lines 
+
+common rules:
+- when you finished send @finish in end of prompt result , not json response
 - all should has a parent
 - root parent is 0
 - root item level should be 0
-- in full details
 - no null title
-- short and effcient titles
+- short and efficient titles
 - don't extra description
-- items should be less than ${maxItems}
+
 - response json should be single layer not nested items in items
-sample response:
-  [{
-   "id": 1,
-   "level":1,
-   "parent":  5 or 0,
-   "title": "..."
-  }]
-`
+
+- choose most related / similar category from here ( based on prompt ):
+${categoriesList}
+- choose Other Category if you not found right category
+
+- sample response:
+{ "category":"...","roadmap:[{"id": 1,"level":1,"parent":5or0,"title":"..."}] }
+
+important items and levels rules:
+- minimum ${minLevels} levels
+- level 1 should has minimum 3 items
+- minimum ${minItems} items
+- maximum ${maxItems} items
+- items should be less than ${maxItems}
+- fill only requested fields
+- no duplicate subjects
+
+prompt: 
+${title}`
   const openai = openAiInstance(token)
   const messages = [];
 
   messages.push({
     "role": "user",
-    "content": basePrompt
+    "content": basePrompt,
+
   })
   var startTime = performance.now()
   let i = 0;
@@ -56,9 +69,9 @@ sample response:
     try {
       const openai_res = await openai.createChatCompletion({
         model: "gpt-3.5-turbo-0301",
-        temperature: 0.3,
+        temperature: 0.4,
         messages,
-        max_tokens: 2048
+        max_tokens: 1100 // max 35~  items
       });
       // console.log(i, "debug", JSON.stringify(openai_res.data.choices, undefined, 1));
       if (openai_res.data.choices.length) {
@@ -105,23 +118,26 @@ sample response:
   for (const message of messages) {
     ai_res += message.content;
   }
-  console.log("res:: ", ai_res);
 
   // normalize json result
   ai_res = ai_res.replace(/\n$/g, '');
   ai_res = ai_res.trim()
 
-  if (ai_res.at(-1) != "]") {
-    ai_res += ']'
+  if (ai_res.at(-1) != "}") {
+    ai_res += '}'
   }
   try {
-    let roadmap = JSON.parse(ai_res);
+    let obj = JSON.parse(ai_res);
+
+    const categoryTitle = obj.category;
+    const catId = findCatId(categoryTitle);
+    let roadmap = obj.roadmap
     // sometimes gpt not giving root item , so we add it manually
     const rootIndex = roadmap.findIndex(item => item.id == 0);
     if (rootIndex == -1) {
       roadmap.push({
         id: 0,
-        level: 0,
+        level: 0
       })
     } else {
       if (roadmap[rootIndex]?.title?.trim() == "Root") {
@@ -134,12 +150,12 @@ sample response:
     // end
 
     // save roadmap
-    const pocket = pocketbaseInstance()
     const code = (Math.random() + 1).toString(36).substring(5)
 
     var endTime = performance.now()
 
-    const saveRes = await pocket.collection('roadmaps').create({
+    const saveRes = await backendServices.saveRoadmap({
+      category: catId,
       code,
       title,
       data: JSON.stringify(roadmap),
