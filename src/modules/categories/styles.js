@@ -8,10 +8,14 @@ export const ComponentWithStyle = styled(Container, {
         }
     },
     '.headerCategory': {
+        flexDirection: "row",
+        "@xs": {
+            margin: "auto",
+            flexDirection: "column",
+        },
         display: "flex",
-        margin: "auto",
         alignItems: "center",
-        flexDirection: "column",
+
         '.iconContainer': {
             position: "relative",
             '.icon': {
@@ -27,7 +31,12 @@ export const ComponentWithStyle = styled(Container, {
         },
         ".textContainer": {
             top: 45,
-            position: "absolute",
+            "@xsMax": {
+                marginLeft: 12,
+            },
+            "@xs": {
+                position: "absolute",
+            },
             ".text": {
                 textAlign: "center",
             },

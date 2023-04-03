@@ -16,7 +16,7 @@ const Categories = () => {
         <Logo size={"lg"} />
       </Row>
       <Spacer y={2} />
-      <Row>
+      <Row justify={"space-between"}>
           <Button onClick={backEvent} className={"backButton"} color={"default"} bordered>
               <Image className={"icon"} alt="back" height={25} width={25} src={'arrow-left.svg'} />
           </Button>
