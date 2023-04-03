@@ -1,6 +1,6 @@
 import Categories from "@/modules/categories";
 
-const RoadmapPage = () => {
+const CategoriesPage = () => {
     return (
         <>
             <Categories />
@@ -8,4 +8,4 @@ const RoadmapPage = () => {
     );
 };
 
-export default RoadmapPage;
+export default CategoriesPage;
