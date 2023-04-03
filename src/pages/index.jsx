@@ -1,6 +1,6 @@
 import React from "react";
 import Head from "next/head";
-import NewFlow from "@/modules/new-flow";
+import Home from "@/modules/home";
 
 const HomePage = () => {
   return (
@@ -8,7 +8,7 @@ const HomePage = () => {
       <Head>
         <title>Ai Roadmap Generator</title>
       </Head>
-      <NewFlow />
+      <Home />
     </>
   );
 };
