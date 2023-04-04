@@ -4,11 +4,9 @@ import { NextUIProvider } from '@nextui-org/react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import globalStyles from "@/shared/styles/global-style";
-import { backendServices } from '@/backend/services/services';
 
-backendServices.init();
 function MyApp({ Component, pageProps }) {
-    globalStyles();
+  globalStyles();
   return (
     <>
       <ToastContainer

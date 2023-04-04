@@ -1,16 +1,42 @@
 import { POCKETBASE_ADMIN_EMAIL, POCKETBASE_ADMIN_PASSWORD } from "@/shared/constants/config";
 import pocketbaseInstance from "./pocketbase";
+import cacheData from "memory-cache";
 
 class Services {
-    pb = pocketbaseInstance()
-    constructor() {
-        // login as admin to pocketbase
-        this.pb.admins.authWithPassword(POCKETBASE_ADMIN_EMAIL, POCKETBASE_ADMIN_PASSWORD).then(() => {
-            console.log("admin login done");
-        });
+    pb
+    isLoading = false
+
+    // todo: this should be refactor , its not optimal way
+    async autoAuth() {
+        const cacheKey = "auth/cookie"
+        const cachedToken = cacheData.get(cacheKey);
+        if (cachedToken) {
+            this.pb.authStore.save(cachedToken)
+            return true;
+        } else {
+            // if (this.isLoading) return
+            this.isLoading = true;
+            await new Promise((resolve, reject) => {
+                this.pb.admins.authWithPassword(POCKETBASE_ADMIN_EMAIL, POCKETBASE_ADMIN_PASSWORD).then(() => {
+                    cacheData.put(cacheKey, this.pb.authStore.token, 1000 * 60 * 60 * 24 * 7); // 7 days 
+                }).catch(e => {
+                    console.log("error on login", e);
+                }).finally(() => {
+                    this.isLoading = false
+                    resolve();
+                })
+            })
+        }
     }
-    init() {
-        console.log("backend service init.");
+    constructor() {
+        this.pb = pocketbaseInstance()
+        this.pb.autoCancellation(false)
+        this.pb.beforeSend = (async (url, options) => {
+            if (url.indexOf("auth-with-password") == -1) {
+                await this.autoAuth();
+            }
+            return { url, options }
+        });
     }
     // save roadmap
     async saveRoadmap(data) {
@@ -52,7 +78,6 @@ class Services {
     }
     // like?roadmap_id=xx&type=remove
     async likeRoadmap({ roadmap_id, type = "add", client_ip } = {}) {
-        console.log(roadmap_id, type);
         let oldLike = null
         try {
             oldLike = await this.pb.collection("likes").getFirstListItem(`roadmap="${roadmap_id}" && client_ip="${client_ip}"`)
@@ -74,7 +99,6 @@ class Services {
     }
     // roadmaps chart
     async getRoadmapsChart({ page = 1, perPage = 30 } = {}) {
-        // console.log(page, perPage);
         return await this.pb.collection("roadmaps_chart").getList(page, perPage)
     }
     // soon
