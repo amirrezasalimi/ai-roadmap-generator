@@ -4,14 +4,8 @@ import { NextUIProvider } from '@nextui-org/react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import globalStyles from "@/shared/styles/global-style";
-import FontLoader from "@/infrastructure/font-loader";
-import '@/shared/styles/global.css';
-import { backendServices } from '@/backend/services/services';
-
-backendServices.init();
-
 function MyApp({ Component, pageProps }) {
-    globalStyles();
+  globalStyles();
   return (
       <>
       <FontLoader />

@@ -11,7 +11,7 @@ export default async function handler(req, res) {
                 data
             })
         }
-        data = await backendServices.getRoadmapsChart();
+        data = await backendServices.getRoadmapsChart({perPage:99});
         // cache
         const cacheTime = 1000 * 60 * 10; // 10 min cache
         cacheData.put(cacheKey, data, cacheTime);
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
             data
         })
     } catch (e) {
-        console.log(e);
+        // console.log(e);
         return res.status(500).json({
             ok: false,
             message: e
