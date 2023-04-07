@@ -21,18 +21,18 @@ const Home = () => {
             <Spacer y={2}/>
             <Container>
                 <Grid.Container className={'categories'}>
-                    <Grid xs={12} sm={10} md={8} lg={6} xl={5} display="flex" direction="column" justify="center">
+                    <Grid xs={12} sm={10} md={10} lg={8} xl={6} display="flex" direction="column" justify="center">
                         <Categories/>
                     </Grid>
                 </Grid.Container>
                 <Spacer y={1}/>
                 <Grid.Container className={'content'}>
-                    <Grid xs={12} sm={5} md={4} lg={3} xl={2.5} display="flex" justify="center">
+                    <Grid xs={12} sm={5} md={5} lg={4} xl={3} display="flex" justify="center">
                         <div className={'box'}>
                             {isBrowser && <FormNewRoadmap/>}
                         </div>
                     </Grid>
-                    <Grid xs={12} sm={5} md={4} lg={3} xl={2.5} display="flex" justify="center">
+                    <Grid xs={12} sm={5} md={5} lg={4} xl={3} display="flex" justify="center">
                         <div className={'box'}>
                             <RecentRoadmap/>
                         </div>
