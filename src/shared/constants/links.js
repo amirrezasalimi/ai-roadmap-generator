@@ -1,6 +1,6 @@
 export const LINKS = {
     ROADMAP: '/roadmap/{id}',
     CATEGORIES: '/categories',
-    CATEGORY: '/categories/{id}',
+    CATEGORY: '/categories/{slug}',
     NEW_ROADMAP: '/'
 };
