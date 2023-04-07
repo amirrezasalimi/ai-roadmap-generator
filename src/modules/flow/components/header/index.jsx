@@ -3,11 +3,11 @@ import Button from "@/shared/components/button";
 import Image from "next/image";
 import Logo from "@/shared/components/logo";
 import {Row, Text} from "@nextui-org/react";
-import copyToClipboard from "@/shared/hooks/copy_clipboard";
 import toast from "@/shared/components/toast";
 import Link from "next/link";
 import APP from "@/shared/constants/app";
 import {LINKS} from "@/shared/constants/links";
+import copyToClipboard from "@/shared/helper/copy-clipboard";
 const Header = (props) => {
     const link = typeof window !== "undefined" ? window?.location?.href : "";
     return (
