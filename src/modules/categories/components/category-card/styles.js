@@ -23,7 +23,7 @@ export const ComponentWithStyle = styled("div", {
             height: 64,
             position: "absolute",
             width: "100%",
-            backgroundImage: "linear-gradient(rgba(12, 12, 12, 0.46), rgb(20 20 20))"
+            backgroundImage: "linear-gradient(rgb(20 20 20 / 58%), rgb(20 20 20))"
         },
     },
     ".textContainer": {
