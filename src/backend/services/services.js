@@ -44,7 +44,9 @@ class Services {
     }
     // recent roadmaps
     async getRecents() {
-        return await this.pb.collection('recents').getList(1, 50);
+        return await this.pb.collection('recents').getList(1, 50, {
+            expand: "category"
+        });
     }
     // roadmap details + likes
     async getRoadmapByCode(code) {
