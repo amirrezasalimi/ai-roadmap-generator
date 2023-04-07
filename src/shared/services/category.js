@@ -7,67 +7,10 @@ class CategoryService {
       mainApi
           .post(CATEGORY.GET_CATEGORIES)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data.data.items);
           })
           .catch((err) => {
             //reject(err);
-              // mock
-              resolve([
-                  {
-                      id: 1,
-                      title: "Software development",
-                      slug: "Product management",
-                      count: 12,
-                  },
-                  {
-                      id: 2,
-                      title: "Software development",
-                      slug: "Product management",
-                      count: 12,
-                  },
-                  {
-                      id: 3,
-                      title: "Software development",
-                      slug: "Product management",
-                      count: 12,
-                  },
-                  {
-                      id: 4,
-                      title: "Software development",
-                      slug: "Product management",
-                      count: 12,
-                  },
-                  {
-                      id: 5,
-                      title: "Software development",
-                      slug: "Product management",
-                      count: 12,
-                  },
-                  {
-                      id: 6,
-                      title: "Software development",
-                      slug: "Product management",
-                      count: 12,
-                  },
-                  {
-                      id: 7,
-                      title: "Software development",
-                      slug: "Product management",
-                      count: 12,
-                  },
-                  {
-                      id: 8,
-                      title: "Software development",
-                      slug: "Product management",
-                      count: 12,
-                  },
-                  {
-                      id: 9,
-                      title: "Software development",
-                      slug: "Product management",
-                      count: 12,
-                  },
-              ]);
           });
     });
   };
