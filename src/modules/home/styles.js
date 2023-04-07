@@ -27,19 +27,6 @@ export const ComponentWithStyle = styled('div', {
         width: '100%',
         height: '420px'
     },
-
-    '.buttonLinkContainer': {
-        justifyContent: "center",
-        gap: 16,
-        marginTop: 32,
-        "& button": {
-            maxWidth: 188,
-            flex: 1,
-        },
-        '.icon': {
-            marginRight: 12
-        },
-    },
     '.gradient1': {
         "@md": {
             bottom: 0,
@@ -66,13 +53,6 @@ export const ComponentWithStyle = styled('div', {
            pointerEvents: "none"
        }
     },
-    '.note': {
-        margin: 'auto',
-        color: '#515151',
-        padding: 12,
-        fontSize: 16,
-        textAlign: "center"
-    }
 });
 
 export default ComponentWithStyle;
