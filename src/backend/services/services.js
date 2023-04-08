@@ -1,6 +1,7 @@
 import { POCKETBASE_ADMIN_EMAIL, POCKETBASE_ADMIN_PASSWORD } from "@/shared/constants/config";
 import pocketbaseInstance from "./pocketbase";
 import cacheData from "memory-cache";
+import { POCKETBASE_COLLECTIONS } from "../constants";
 
 class Services {
     pb
@@ -40,53 +41,63 @@ class Services {
     }
     // save roadmap
     async saveRoadmap(data) {
-        return await this.pb.collection('roadmaps').create(data);
+        return await this.pb.collection(POCKETBASE_COLLECTIONS.ROADMAPS).create(data);
     }
     // recent roadmaps
     async getRecents() {
-        return await this.pb.collection('recents').getList(1, 50, {
+        return await this.pb.collection(POCKETBASE_COLLECTIONS.ROADMAPS_RECENTS).getList(1, 50, {
             expand: "category"
         });
     }
     // roadmap details + likes
-    async getRoadmapByCode(code) {
-        const data = await this.pb.collection('roadmaps').getFirstListItem(`code = "${code}"`);
+    async getRoadmapByCode({ code, client_ip }) {
+        const data = await this.pb.collection(POCKETBASE_COLLECTIONS.ROADMAPS).getFirstListItem(`code = "${code}"`);
         let likes = 0
         try {
-            likes = await this.pb.collection("roadmaps_likes").getOne(data.id)
+            likes = (await this.pb.collection(POCKETBASE_COLLECTIONS.ROADMAPS_LIKES).getOne(data.id)).likes
         } catch (e) {
             // nothing really
         }
         data.likes = likes;
+        try {
+            data.isLiked = (await this.getRoadmapClientLike({ roadmap_id: data.id, client_ip })) != null
+        } catch (e) {
+            console.log(e);
+            data.isLiked = false
+        }
         return data;
     }
     // categories 
     async getCategories() {
-        return await this.pb.collection('categories').getList(1, 99, {
-            sort: "index"
+        return await this.pb.collection(POCKETBASE_COLLECTIONS.CATEGORIES_EXTRA).getList(1, 99, {
+            sort: "category_index"
         })
     }
     // roadmaps by category + pagination
     async getRoadmapsByCategorySlug({ page = 1, perPage = 24, slug } = {}) {
-        const category = await this.pb.collection('categories').getFirstListItem(`slug="${slug}"`)
-        const items = await this.pb.collection('list').getList(page, perPage, {
+        const category = await this.pb.collection(POCKETBASE_COLLECTIONS.CATEGORIES_EXTRA).getFirstListItem(`slug="${slug}"`)
+        const items = await this.pb.collection(POCKETBASE_COLLECTIONS.ROADMAPS_EXTRA).getList(page, perPage, {
             filter: `category="${category.id}"`,
-            sort: "+created",
+            sort: "+created"
         });
         return {
             items,
             category
         }
     }
+    // isLiked?client_ip=x.x.x.x&roadmap_id=xxx
+    async getRoadmapClientLike({ roadmap_id, client_ip } = {}) {
+        return await this.pb.collection(POCKETBASE_COLLECTIONS.LIKES).getFirstListItem(`roadmap="${roadmap_id}" && client_ip="${client_ip}"`)
+    }
     // like?roadmap_id=xx&type=remove
     async likeRoadmap({ roadmap_id, type = "add", client_ip } = {}) {
         let oldLike = null
         try {
-            oldLike = await this.pb.collection("likes").getFirstListItem(`roadmap="${roadmap_id}" && client_ip="${client_ip}"`)
+            oldLike = await this.getRoadmapClientLike({ roadmap_id, client_ip })
         } catch (e) { }
         if (type == "add") {
             if (!oldLike) {
-                return await this.pb.collection("likes").create({
+                return await this.pb.collection(POCKETBASE_COLLECTIONS.LIKES).create({
                     roadmap: roadmap_id,
                     client_ip
                 });
@@ -94,14 +105,14 @@ class Services {
             return false;
         } else {
             if (oldLike) {
-                return await this.pb.collection("likes").delete(oldLike.id);
+                return await this.pb.collection(POCKETBASE_COLLECTIONS.LIKES).delete(oldLike.id);
             }
             return false;
         }
     }
     // roadmaps chart
     async getRoadmapsChart({ page = 1, perPage = 30 } = {}) {
-        return await this.pb.collection("roadmaps_chart").getList(page, perPage)
+        return await this.pb.collection(POCKETBASE_COLLECTIONS.ROADMAPS_CHART).getList(page, perPage)
     }
     // soon
     // views by google analytics api + cache 
