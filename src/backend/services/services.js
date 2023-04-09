@@ -60,10 +60,10 @@ class Services {
         }
         data.likes = likes;
         try {
-            data.isLiked = (await this.getRoadmapClientLike({ roadmap_id: data.id, client_ip })) != null
+            data.is_liked = (await this.getRoadmapClientLike({ roadmap_id: data.id, client_ip })) != null
         } catch (e) {
             console.log(e);
-            data.isLiked = false
+            data.is_liked = false
         }
         return data;
     }
