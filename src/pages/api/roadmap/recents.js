@@ -1,4 +1,5 @@
 import { backendServices } from "@/backend/services/services";
+import { log } from "console";
 import cacheData from "memory-cache";
 
 export default async function handler(req, res) {
@@ -15,7 +16,7 @@ export default async function handler(req, res) {
         // remove data cuz its large json
         list.items = list.items.map(item => ({ ...item, data: null }))
         // cache
-        const cacheTime = 1000 * 60; // 1 min cache
+        const cacheTime = 1000 * 60 * 10; // 10 min cache
         cacheData.put(cacheKey, list, cacheTime);
         // 
         return res.status(200).json({

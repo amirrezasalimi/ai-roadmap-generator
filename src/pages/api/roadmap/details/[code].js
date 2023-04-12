@@ -1,4 +1,5 @@
 import { backendServices } from "@/backend/services/services";
+import requestIp from 'request-ip'
 
 export default async function handler(req, res) {
     const code = req.query.code;
@@ -9,7 +10,8 @@ export default async function handler(req, res) {
         })
     }
     try {
-        const data = await backendServices.getRoadmapByCode(code).catch(e => {
+        const detectedIp = requestIp.getClientIp(req)
+        const data = await backendServices.getRoadmapByCode({ code, client_ip: detectedIp }).catch(e => {
             return res.status(404).json({
                 ok: false,
                 message: e.message
