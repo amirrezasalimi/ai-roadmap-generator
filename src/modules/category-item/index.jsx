@@ -27,20 +27,18 @@ const CategoryItem = () => {
                 <Logo size={"lg"}/>
             </Row>
             <Spacer y={2}/>
-            <Row justify={"space-between"}>
+            {
+                hookGetCategoryData.status === "loading" &&
+                <Row justify={"center"}>
+                    <Loading color={"secondary"}/>
+                </Row>
+            }
+            <Row justify={"space-between"} align={"center"}>
                 <Button onClick={backEvent} className={"backButton"} color={"default"} bordered>
                     <Image className={"icon"} alt="back" height={25} width={25} src={'/arrow-left.svg'}/>
                 </Button>
                 {
-                    hookGetCategoryData.status === "loading" &&
-                    <Row justify={"center"}>
-                        <Loading color={"secondary"}/>
-                    </Row>
-                }
-            </Row>
-            {
-                hookGetCategoryData.status === "done" &&
-                <>
+                    hookGetCategoryData.status === "done" &&
                     <div className={"headerCategory"}>
                         <div className={"iconContainer"}>
                             <Image className={"icon"} alt="back" height={60} width={60}
@@ -52,18 +50,21 @@ const CategoryItem = () => {
                                 {category.title}
                             </Text>
                             <Text size={16} className={"count"}>
-                                12 <span>/Roadmap</span>
+                                {category.roadmap_count} <span>/Roadmap</span>
                             </Text>
                         </div>
                     </div>
-                    <Grid.Container gap={2} justify="center">
-                        {items?.map((item, index) => (
-                            <Grid key={`category-item-page-${index}`} xs={6} sm={4} md={2.4} lg={2}>
-                                <RoadmapCard data={item}/>
-                            </Grid>
-                        ))}
-                    </Grid.Container>
-                </>
+                }
+            </Row>
+            {
+                hookGetCategoryData.status === "done" &&
+                <Grid.Container gap={2} justify="center">
+                    {items?.map((item, index) => (
+                        <Grid key={`category-item-page-${index}`} xs={12} sm={4}>
+                            <RoadmapCard data={item}/>
+                        </Grid>
+                    ))}
+                </Grid.Container>
             }
         </ComponentWithStyle>
     )
