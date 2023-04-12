@@ -8,14 +8,14 @@ export const ComponentWithStyle = styled(Container, {
         }
     },
     '.headerCategory': {
+        minHeight: 120,
+        display: "flex",
+        alignItems: "center",
         flexDirection: "row",
         "@xs": {
             margin: "auto",
             flexDirection: "column",
         },
-        display: "flex",
-        alignItems: "center",
-
         '.iconContainer': {
             position: "relative",
             '.icon': {
