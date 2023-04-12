@@ -31,7 +31,8 @@ export const ComponentWithStyle = styled('fragment', {
             },
             justifyContent: "space-between",
             '.category *': {
-                fontSize: 12,
+                fontSize: 14,
+                fontWeight: 600,
                 "@sm": {
                     flexWrap: "nowrap",
                     fontSize: 10,
