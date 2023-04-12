@@ -18,7 +18,7 @@ const CategoryCard = ({data}) => {
                       {data.title}
                   </Text>
                   <Text size={16} className={"count"}>
-                      12 <span>/Roadmap</span>
+                      {data.roadmap_count} <span>/Roadmap</span>
                   </Text>
               </div>
           </Link>
