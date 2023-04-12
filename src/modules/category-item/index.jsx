@@ -7,6 +7,7 @@ import {useRouter} from "next/router";
 import {useEffect} from "react";
 import useGetCategoryData from "./hooks/get-categories";
 import RoadmapCard from "./components/roadmap-card";
+import Footer from "@/shared/components/footer";
 
 const CategoryItem = () => {
     const router = useRouter();
@@ -66,6 +67,7 @@ const CategoryItem = () => {
                     ))}
                 </Grid.Container>
             }
+            <Footer/>
         </ComponentWithStyle>
     )
 };

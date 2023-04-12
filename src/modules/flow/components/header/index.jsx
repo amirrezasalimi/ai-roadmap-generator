@@ -16,7 +16,7 @@ const Header = (props) => {
                 <Row>
                     <Logo size={"md"} />
                     <Link target={"_blank"} href={APP.GITHUB_LINK}>
-                        <Button className={"githubButton"} size={'md'}>
+                        <Button color={"default"} className={"githubButton"} size={'md'}>
                             <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/github.svg'}/>
                             <span>
                             github
@@ -27,6 +27,7 @@ const Header = (props) => {
                 <div>
                   <Link href={LINKS.NEW_ROADMAP}>
                       <Button
+                          color={"default"}
                           className="submitButton"
                           size={'md'}
                           type="submit">
@@ -49,6 +50,7 @@ const Header = (props) => {
                         Share page
                     </Text>
                     <Button
+                        color={"default"}
                         onClick={() => {
                             copyToClipboard(link);
                             toast.success("link copied!");
@@ -57,7 +59,7 @@ const Header = (props) => {
                         <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/copy.svg'}/>
                     </Button>
                     <a target={"blank"} href={`https://twitter.com/share?text=${link}`}>
-                        <Button className={"shareItem"}>
+                        <Button color={"default"} className={"shareItem"}>
                             <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/twitter.svg'}/>
                         </Button>
                     </a>
@@ -65,7 +67,7 @@ const Header = (props) => {
                         target={"blank"}
                         href={`https://www.linkedin.com/shareArticle?mini=true&url=${link}&title=${props.title}`}
                     >
-                        <Button className={"shareItem"}>
+                        <Button color={"default"} className={"shareItem"}>
                             <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/linkdin.svg'}/>
                         </Button>
                     </a>

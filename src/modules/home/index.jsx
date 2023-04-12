@@ -1,14 +1,10 @@
-import Button from "@/shared/components/button";
-import {Row, Text, Grid, Spacer, Container} from "@nextui-org/react";
-import Image from "next/image";
+import {Row, Grid, Spacer, Container} from "@nextui-org/react";
 import ComponentWithStyle from "./styles";
 import Logo from "@/shared/components/logo";
-import Link from "next/link";
-import APP from "@/shared/constants/app";
 import FormNewRoadmap from "./components/form-new-roadmap";
 import RecentRoadmap from "./components/recents";
 import Categories from "@/modules/home/components/categories";
-import Footer from "@/shared/components/fotter";
+import Footer from "@/shared/components/footer";
 
 const Home = () => {
     const isBrowser = typeof window != "undefined"
@@ -39,8 +35,8 @@ const Home = () => {
                     </Grid>
                 </Grid.Container>
                 <Footer/>
-                {/*<div className="gradient1" />*/}
-                {/*<div className="gradient2" />*/}
+      {/*          <div className="gradient1" />
+                <div className="gradient2" />*/}
             </Container>
         </ComponentWithStyle>
     )

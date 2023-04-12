@@ -11,13 +11,13 @@ const Footer = () => {
             <Row className="buttonLinkContainer">
                 <Link href={APP.GITHUB_LINK}>
                     <Button bordered color={"default"} size={'lg'}>
-                        <Image className={"icon"} alt="github" height={25} width={25} src={'github.svg'} />
+                        <Image className={"icon"} alt="github" height={25} width={25} src={'/github.svg'} />
                         github
                     </Button>
                 </Link>
                 <Link href={APP.FIGMA_LINK}>
                     <Button bordered color={"default"} size={'lg'}>
-                        <Image className={"icon"} alt="figma" height={25} width={25} src={'figma.svg'} />
+                        <Image className={"icon"} alt="figma" height={25} width={25} src={'/figma.svg'} />
                         figma
                     </Button>
                 </Link>
