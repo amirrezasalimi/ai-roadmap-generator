@@ -34,9 +34,9 @@ export const ComponentWithStyle = styled('div', {
             position: 'absolute',
             width: 439,
             height: 439,
-            background: '#7A008E',
-            mixBlendMode: 'normal',
-            filter: 'blur(400px)',
+            background: 'rgb(115 0 132 / 85%)',
+            mixBlendMode: 'lighten',
+            filter: 'blur(500px)',
             pointerEvents: "none",
         }
     },
@@ -47,9 +47,9 @@ export const ComponentWithStyle = styled('div', {
            position: 'absolute',
            width: 439,
            height: 439,
-           background: '#7A008E',
-           mixBlendMode: 'normal',
-           filter: 'blur(400px)',
+           background: 'rgb(115 0 132 / 85%)',
+           mixBlendMode: 'lighten',
+           filter: 'blur(500px)',
            pointerEvents: "none"
        }
     },
