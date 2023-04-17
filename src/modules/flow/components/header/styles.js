@@ -13,7 +13,8 @@ export const ComponentWithStyle = styled('div', {
         display: "flex",
         justifyContent: "space-between",
         ".githubButton" : {
-            marginLeft: 12
+            marginLeft: 12,
+            marginRight: 12
         },
         ".githubSvg" : {
             marginRight: 12
@@ -56,7 +57,10 @@ export const ComponentWithStyle = styled('div', {
             height: "100%",
             ":first-child": {
                 marginRight: 6,
-                color: '#757475'
+                color: '#757475',
+                "@xsMax": {
+                    display: "none",
+                }
             }
         }
     },
