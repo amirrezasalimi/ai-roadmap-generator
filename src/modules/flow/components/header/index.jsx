@@ -2,19 +2,29 @@ import ComponentWithStyle from "./styles";
 import Button from "@/shared/components/button";
 import Image from "next/image";
 import Logo from "@/shared/components/logo";
-import {Row, Text} from "@nextui-org/react";
+import {Row, Spacer, Text} from "@nextui-org/react";
 import toast from "@/shared/components/toast";
 import Link from "next/link";
 import APP from "@/shared/constants/app";
 import {LINKS} from "@/shared/constants/links";
 import copyToClipboard from "@/shared/helper/copy-clipboard";
-const Header = (props) => {
+import useLike from "@/modules/flow/hooks/like-roadmap";
+
+const Header = ({data}) => {
     const link = typeof window !== "undefined" ? window?.location?.href : "";
+    const hookLike = useLike(data?.is_liked, data?.id, data?.likes);
+    const onClickLike = () => {
+        if (hookLike.data.isLiked) {
+            hookLike.disLikeAction();
+        } else {
+            hookLike.likeAction();
+        }
+    }
     return (
         <ComponentWithStyle>
             <div className={"main"}>
                 <Row>
-                    <Logo size={"md"} />
+                    <Logo size={"md"}/>
                     <Link target={"_blank"} href={APP.GITHUB_LINK}>
                         <Button color={"default"} className={"githubButton"} size={'md'}>
                             <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/github.svg'}/>
@@ -25,15 +35,15 @@ const Header = (props) => {
                     </Link>
                 </Row>
                 <div>
-                  <Link href={LINKS.NEW_ROADMAP}>
-                      <Button
-                          color={"default"}
-                          className="submitButton"
-                          size={'md'}
-                          type="submit">
-                          Generate
-                      </Button>
-                  </Link>
+                    <Link href={LINKS.NEW_ROADMAP}>
+                        <Button
+                            color={"default"}
+                            className="submitButton"
+                            size={'md'}
+                            type="submit">
+                            Generate
+                        </Button>
+                    </Link>
                 </div>
             </div>
             <div className={"content"}>
@@ -42,7 +52,7 @@ const Header = (props) => {
                         {'Description: '}
                     </Text>
                     <Text span>
-                        {props?.title}
+                        {data?.title}
                     </Text>
                 </div>
                 <div className={"share"}>
@@ -65,13 +75,21 @@ const Header = (props) => {
                     </a>
                     <a
                         target={"blank"}
-                        href={`https://www.linkedin.com/shareArticle?mini=true&url=${link}&title=${props.title}`}
+                        href={`https://www.linkedin.com/shareArticle?mini=true&url=${link}&title=${data.title}`}
                     >
                         <Button color={"default"} className={"shareItem"}>
                             <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/linkdin.svg'}/>
                         </Button>
                     </a>
                 </div>
+                <Button onClick={onClickLike} color={"default"} className={"shareItem"}>
+                    {hookLike.data.isLiked ?
+                        <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/heart.svg'}/>
+                        : <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/heart-empty.svg'}/>
+                    }
+                    <Spacer x={.5} />
+                    {hookLike.data.likeCount}
+                </Button>
             </div>
         </ComponentWithStyle>
     )

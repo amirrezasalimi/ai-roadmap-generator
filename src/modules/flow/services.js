@@ -15,6 +15,30 @@ class FlowService {
         });
     });
   };
+  likeRoadmap = (id) => {
+    return new Promise((resolve, reject) => {
+      mainApi
+          .get(makeUrl(FLOW_API.LIKE_ROADMAP, { id: id}))
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+    });
+  };
+  disLikeRoadmap = (id) => {
+    return new Promise((resolve, reject) => {
+      mainApi
+          .get(makeUrl(FLOW_API.DIS_LIKE_ROADMAP, { id: id}))
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+    });
+  };
 }
 
 export default new FlowService();
