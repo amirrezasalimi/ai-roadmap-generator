@@ -1,4 +1,5 @@
-import pocketbaseInstance from "@/shared/helper/pocketbase"
+import { backendServices } from "@/backend/services/services";
+import { log } from "console";
 import cacheData from "memory-cache";
 
 export default async function handler(req, res) {
@@ -11,17 +12,11 @@ export default async function handler(req, res) {
                 data: recents
             })
         }
-        const page = req.query.page || 1;
-        const perPage = req.query.perPage || 20;
-        const pocket = pocketbaseInstance()
-        let list = await pocket.collection('roadmaps').getList(page, perPage, {
-            filter: "verified = true",
-            sort: '-created',
-        })
+        let list = await backendServices.getRecents();
         // remove data cuz its large json
         list.items = list.items.map(item => ({ ...item, data: null }))
         // cache
-        const cacheTime = 1000 * 60; // 1 min cache
+        const cacheTime = 1000 * 60 * 10; // 10 min cache
         cacheData.put(cacheKey, list, cacheTime);
         // 
         return res.status(200).json({

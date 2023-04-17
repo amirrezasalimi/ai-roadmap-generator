@@ -41,7 +41,7 @@ const Flow = () => {
               Ai Roadmap | {title}
             </title>
           </Head>
-          <Header title={title} />
+          <Header data={hookFlow?.data} />
           <DrawFlow data={hookFlow.data.data} />
         </>
       }

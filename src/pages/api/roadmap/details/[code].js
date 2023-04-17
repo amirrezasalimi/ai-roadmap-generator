@@ -1,4 +1,5 @@
-import pocketbaseInstance from "@/shared/helper/pocketbase";
+import { backendServices } from "@/backend/services/services";
+import requestIp from 'request-ip'
 
 export default async function handler(req, res) {
     const code = req.query.code;
@@ -8,11 +9,9 @@ export default async function handler(req, res) {
             message: "code required"
         })
     }
-    const pocket = pocketbaseInstance()
     try {
-        const data = await pocket.collection('roadmaps').getFirstListItem(`code = "${code}"`, {
-            expand: "created,title,code"
-        }).catch(e => {
+        const detectedIp = requestIp.getClientIp(req)
+        const data = await backendServices.getRoadmapByCode({ code, client_ip: detectedIp }).catch(e => {
             return res.status(404).json({
                 ok: false,
                 message: e.message
