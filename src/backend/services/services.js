@@ -9,17 +9,21 @@ class Services {
 
     // todo: this should be refactor , its not optimal way
     async checkAuth() {
+        console.log("check login");
         const cacheKey = "auth/cookie"
         const cachedToken = cacheData.get(cacheKey);
         if (cachedToken) {
             this.pb.authStore.save(cachedToken)
+            console.log("use cached token");
+
             return true;
         } else {
             // if (this.isLoading) return
             this.isLoading = true;
             await new Promise((resolve, reject) => {
-                this.pb.admins.authWithPassword(POCKETBASE_ADMIN_EMAIL, POCKETBASE_ADMIN_PASSWORD).then(() => {
+                return this.pb.admins.authWithPassword(POCKETBASE_ADMIN_EMAIL, POCKETBASE_ADMIN_PASSWORD).then(() => {
                     cacheData.put(cacheKey, this.pb.authStore.token, 1000 * 60 * 60 * 24 * 1); // 1 days 
+                    console.log("get new token");
                 }).catch(e => {
                     console.log("error on login", e);
                 }).finally(() => {
@@ -56,7 +60,6 @@ class Services {
         try {
             data.is_liked = (await this.getRoadmapClientLike({ roadmap_id: data.id, client_ip })) != null
         } catch (e) {
-            console.log(e);
             data.is_liked = false
         }
         return data;
@@ -120,8 +123,8 @@ export const backendServices = new Proxy(new Services(), {
             return origMethod;
         } else {
             // Otherwise, return a new function that first calls "checkAuth", then calls the original method
-            return function (...args) {
-                target.checkAuth();
+            return async function (...args) {
+                await target.checkAuth();
                 const result = origMethod.apply(target, args);
                 return result;
             };
