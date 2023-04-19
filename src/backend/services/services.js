@@ -8,7 +8,7 @@ class Services {
     isLoading = false
 
     // todo: this should be refactor , its not optimal way
-    async autoAuth() {
+    async checkAuth() {
         const cacheKey = "auth/cookie"
         const cachedToken = cacheData.get(cacheKey);
         if (cachedToken) {
@@ -19,7 +19,7 @@ class Services {
             this.isLoading = true;
             await new Promise((resolve, reject) => {
                 this.pb.admins.authWithPassword(POCKETBASE_ADMIN_EMAIL, POCKETBASE_ADMIN_PASSWORD).then(() => {
-                    cacheData.put(cacheKey, this.pb.authStore.token, 1000 * 60 * 60 * 24 * 7); // 7 days 
+                    cacheData.put(cacheKey, this.pb.authStore.token, 1000 * 60 * 60 * 24 * 1); // 1 days 
                 }).catch(e => {
                     console.log("error on login", e);
                 }).finally(() => {
@@ -32,12 +32,6 @@ class Services {
     constructor() {
         this.pb = pocketbaseInstance()
         this.pb.autoCancellation(false)
-        this.pb.beforeSend = (async (url, options) => {
-            if (url.indexOf("auth-with-password") == -1) {
-                await this.autoAuth();
-            }
-            return { url, options }
-        });
     }
     // save roadmap
     async saveRoadmap(data) {
@@ -117,4 +111,20 @@ class Services {
     // soon
     // views by google analytics api + cache 
 }
-export const backendServices = new Services();
+
+export const backendServices = new Proxy(new Services(), {
+    get(target, propKey, receiver) {
+        const origMethod = target[propKey];
+        if (propKey === "checkAuth") {
+            // If the method being called is "checkAuth", just return the original method
+            return origMethod;
+        } else {
+            // Otherwise, return a new function that first calls "checkAuth", then calls the original method
+            return function (...args) {
+                target.checkAuth();
+                const result = origMethod.apply(target, args);
+                return result;
+            };
+        }
+    },
+});
