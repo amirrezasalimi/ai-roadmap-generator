@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         }
         data = await backendServices.getCategories();
         // cache
-        const cacheTime = 1000 * 60 * 60; // 60 min cache
+        const cacheTime = 1000 * 60 * 10; // 10 min cache
         cacheData.put(cacheKey, data, cacheTime);
         // 
         return res.status(200).json({
