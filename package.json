@@ -17,6 +17,7 @@
     "@vercel/og": "^0.1.0",
     "clsx": "^1.2.1",
     "dagre": "^0.8.5",
+    "javascript-time-ago": "^2.5.9",
     "memory-cache": "^0.2.0",
     "next": "13.1.5",
     "openai": "^3.2.1",
