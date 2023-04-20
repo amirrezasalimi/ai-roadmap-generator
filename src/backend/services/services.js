@@ -44,7 +44,8 @@ class Services {
     // recent roadmaps
     async getRecents() {
         return await this.pb.collection(POCKETBASE_COLLECTIONS.ROADMAPS_RECENTS).getList(1, 50, {
-            expand: "category"
+            expand: "category",
+            sort: "-created"
         });
     }
     // roadmap details + likes
@@ -75,7 +76,7 @@ class Services {
         const category = await this.pb.collection(POCKETBASE_COLLECTIONS.CATEGORIES_EXTRA).getFirstListItem(`slug="${slug}"`)
         const items = await this.pb.collection(POCKETBASE_COLLECTIONS.ROADMAPS_EXTRA).getList(page, perPage, {
             filter: `category="${category.id}"`,
-            sort: "+created"
+            sort: "-created"
         });
         return {
             items,
