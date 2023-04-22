@@ -1,38 +1,40 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# AI Roadmap
 
-## Getting Started
+AI Roadmap is a website that allows users to create a minimal roadmap for their project by entering a description. The website is built using Next.js and NextUI for UI and components. We use Pocketbase, an open-source single-file backend, to store the data. We also use OpenAI's Chat-GPT service to generate the content for the roadmaps.
 
-First, run the development server:
+## Installation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+1. Clone the repository.
+2. Fill the `.env.local` file with the following values:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- POCKETBASE_URL=
+- POCKETBASE_ADMIN_EMAIL=
+- POCKETBASE_ADMIN_PASSWORD=
+- OPEN_AI_TOKEN=
 
-You can start editing the page by modifying `app/page.jsx`. The page auto-updates as you edit the file.
+You can find a sample in `.env.example`.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Backend
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+We use Pocketbase, a minimal and fast open-source backend similar to Firebase, to store the data. The schema of the tables can be found in the [repository](https://github.com/amirrezasalimi/ai-roadmap-backend). More information about Pocketbase can be found in their [GitHub repository](https://github.com/pocketbase/pocketbase).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## OpenAI Chat-GPT
 
-## Learn More
+We use OpenAI's Chat-GPT service to generate the content for the roadmaps. We use the GPT-3.5-turbo model with a minimum of 15 items and a maximum of 30 items. The cost of each roadmap is $0.002 per 1K tokens, and each roadmap costs a minimum of 1200 tokens. This means that every 1000 roadmaps cost $2.
 
-To learn more about Next.js, take a look at the following resources:
+You will need to provide your OpenAI API key in the `.env.local` file under the `OPEN_AI_TOKEN` variable.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Credits
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+* [Amirreza Salimi](https://github.com/amirrezasalimi) - Backend Developer
+* [Amir Damirchi](https://github.com/amird308) - Frontend Developer
+* [Ehsan Ezzati](https://dribbble.com/theehsanez) - UI/UX Designer 
 
-## Deploy on Vercel
+## Design
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+You can find the Figma design for the UI [here](https://www.figma.com/file/iBSVcVXVZeLq4Anpwj5J9u/AI?node-id=0%3A1&t=Fh9De29ElXU4u51G-1).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## License
+
+AI Roadmap is an open-source project with the MIT license. Feel free to use it, modify it, or distribute it.
+
