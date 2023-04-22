@@ -2,6 +2,8 @@
 
 AI Roadmap is a website that allows users to create a minimal roadmap for their project by entering a description. The website is built using Next.js and NextUI for UI and components. We use Pocketbase, an open-source single-file backend, to store the data. We also use OpenAI's Chat-GPT service to generate the content for the roadmaps.
 
+![Screenshot](screenshot.png)
+
 ## Installation
 
 1. Clone the repository.
