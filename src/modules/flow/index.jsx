@@ -40,6 +40,10 @@ const Flow = () => {
             <title>
               Ai Roadmap | {title}
             </title>
+
+            <meta property="og:title" content={`Ai Roadmap : ${title}`} />
+            <link rel="canonical" href={`https://ai-roadmap.com/roadmap/${flowId}`} />
+
           </Head>
           <Header data={hookFlow?.data} />
           <DrawFlow data={hookFlow.data.data} />
