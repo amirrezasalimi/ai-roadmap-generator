@@ -9,21 +9,21 @@ const Footer = () => {
     return (
         <ComponentWithStyle>
             <Row className="buttonLinkContainer">
-                <Link href={APP.GITHUB_LINK}>
+                <Link href={APP.GITHUB_LINK} target="_blank">
                     <Button bordered color={"default"} size={'lg'}>
                         <Image className={"icon"} alt="github" height={25} width={25} src={'/github.svg'} />
                         github
                     </Button>
                 </Link>
-                <Link href={APP.FIGMA_LINK}>
+                <Link href={APP.FIGMA_LINK} target="_blank">
                     <Button bordered color={"default"} size={'lg'}>
                         <Image className={"icon"} alt="figma" height={25} width={25} src={'/figma.svg'} />
                         figma
                     </Button>
                 </Link>
-                <Link href={APP.DISCORD_LINK}>
+                <Link href={"https://discord.gg/AP42aAvS74"} target="_blank">
                     <Button bordered color={"default"} size={'lg'}>
-                        <Image className={"icon"} alt="discord" height={25} width={25} src={'/discord.svg'} />
+                        <Image className={"icon"} alt="figma" height={25} width={25} src={'/discord.svg'} />
                         discord
                     </Button>
                 </Link>
