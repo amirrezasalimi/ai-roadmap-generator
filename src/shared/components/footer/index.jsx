@@ -1,5 +1,5 @@
 import ComponentWithStyle from "./styles";
-import {Row, Spacer, Text} from "@nextui-org/react";
+import { Row, Spacer, Text } from "@nextui-org/react";
 import Link from "next/link";
 import APP from "@/shared/constants/app";
 import Button from "@/shared/components/button";
@@ -19,6 +19,12 @@ const Footer = () => {
                     <Button bordered color={"default"} size={'lg'}>
                         <Image className={"icon"} alt="figma" height={25} width={25} src={'/figma.svg'} />
                         figma
+                    </Button>
+                </Link>
+                <Link href={APP.DISCORD_LINK}>
+                    <Button bordered color={"default"} size={'lg'}>
+                        <Image className={"icon"} alt="discord" height={25} width={25} src={'/discord.svg'} />
+                        discord
                     </Button>
                 </Link>
             </Row>

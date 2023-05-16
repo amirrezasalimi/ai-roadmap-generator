@@ -12,11 +12,10 @@ export const ComponentWithStyle = styled('div', {
         padding: 16,
         display: "flex",
         justifyContent: "space-between",
-        ".githubButton" : {
+        ".btn": {
             marginLeft: 12,
-            marginRight: 12
         },
-        ".githubSvg" : {
+        ".svgIcon": {
             marginRight: 12
         },
         borderBottom: "1px solid #1D1D1D",
