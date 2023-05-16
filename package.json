@@ -25,6 +25,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.42.1",
+    "react-infinite-scroll-hook": "^4.1.1",
     "react-time-ago": "^7.2.1",
     "react-toastify": "^9.1.1",
     "reactflow": "^11.5.1",

@@ -4,17 +4,19 @@ import Logo from "@/shared/components/logo";
 import Button from "@/shared/components/button";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useGetCategoryData from "./hooks/get-categories";
 import RoadmapCard from "./components/roadmap-card";
 import Footer from "@/shared/components/footer";
 import Head from "next/head";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 const CategoryItem = () => {
     const router = useRouter();
     const { slug } = router.query;
     const hookGetCategoryData = useGetCategoryData();
     const { category, items } = hookGetCategoryData.data;
+
     useEffect(() => {
         if (slug)
             hookGetCategoryData.action(slug);
@@ -22,6 +24,16 @@ const CategoryItem = () => {
     const backEvent = () => {
         router.back()
     }
+
+    const [sentryRef] = useInfiniteScroll({
+        loading: hookGetCategoryData.status == "loading",
+        onLoadMore: () => {
+            hookGetCategoryData.page.current++;
+            hookGetCategoryData.action(slug)
+        },
+        hasNextPage: !hookGetCategoryData.isLastPage,
+        rootMargin: '0px 0px 400px 0px',
+    });
     return (
         <>
             <Head>
@@ -41,12 +53,7 @@ const CategoryItem = () => {
                     <Logo size={"lg"} />
                 </Row>
                 <Spacer y={2} />
-                {
-                    hookGetCategoryData.status === "loading" &&
-                    <Row justify={"center"}>
-                        <Loading color={"secondary"} />
-                    </Row>
-                }
+
                 <Row justify={"space-between"} align={"center"}>
                     <Button onClick={backEvent} className={"backButton"} color={"default"} bordered>
                         <Image className={"icon"} alt="back" height={25} width={25} src={'/arrow-left.svg'} />
@@ -71,7 +78,6 @@ const CategoryItem = () => {
                     }
                 </Row>
                 {
-                    hookGetCategoryData.status === "done" &&
                     <Grid.Container gap={2} justify="center">
                         {items?.map((item, index) => (
                             <Grid key={`category-item-page-${index}`} xs={12} sm={4}>
@@ -79,6 +85,14 @@ const CategoryItem = () => {
                             </Grid>
                         ))}
                     </Grid.Container>
+                }
+                {
+                    (hookGetCategoryData.status === "loading" || !hookGetCategoryData.isLastPage) &&
+                    <div ref={sentryRef}>
+                        <Row justify={"center"}>
+                            <Loading color={"secondary"} />
+                        </Row>
+                    </div>
                 }
                 <Footer />
             </ComponentWithStyle>

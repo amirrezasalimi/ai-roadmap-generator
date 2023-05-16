@@ -1,26 +1,38 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import services from '../services';
 
 const useGetCategoryData = () => {
     const [status, setStatus] = useState('idle');
-    const [data, setData] = useState({});
+    const [data, setData] = useState({
+        items:[],
+    });
+    const [isLastPage, toggleLastPage] = useState(false);
+
+    const page = useRef(1);
     const action = (slug) => {
         setStatus('loading');
-        services.getCategoryData(slug).then(res=> {
-            setStatus('done');
+        services.getCategoryData(slug, page.current).then(res => {
             setData({
+                ...data,
                 category: res.category,
-                items: res.items.items
+                items: [
+                    ...data.items,
+                    ...res.items.items
+                ]
             });
-        }).catch(_err=> {
-            setStatus('idle');
-        })
+            if (res.items.totalPages == page.current) {
+                toggleLastPage(true);
+            }
+
+        }).finally(() => setStatus("idle"))
     }
-    
+
     return {
         data,
         action,
         status,
+        page,
+        isLastPage
     }
 }
 

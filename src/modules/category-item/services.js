@@ -1,18 +1,22 @@
 import mainApi from "@/infrastructure/http-client-main";
-import {CATEGORY_ITEM_API} from "./constants";
-import makeUrl from "@/shared/helper/make-url";
+import { CATEGORY_ITEM_API } from "./constants";
 
 class CategoryItemService {
-  getCategoryData = (slug) => {
+  getCategoryData = (slug, page = 1) => {
     return new Promise((resolve, reject) => {
       mainApi
-          .post(makeUrl(CATEGORY_ITEM_API.GET_CATEGORY_DATA, {slug: slug }))
-          .then((res) => {
-            resolve(res.data.data);
-          })
-          .catch((err) => {
-            //reject(err);
-          });
+        .get(CATEGORY_ITEM_API.GET_CATEGORY_DATA, {
+          params: {
+            category_slug: slug,
+            page
+          }
+        })
+        .then((res) => {
+          resolve(res.data.data);
+        })
+        .catch((err) => {
+          //reject(err);
+        });
     });
   };
 }
