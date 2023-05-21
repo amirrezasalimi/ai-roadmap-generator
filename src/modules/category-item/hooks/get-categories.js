@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import services from '../services';
 
 const useGetCategoryData = () => {
-    const [status, setStatus] = useState('idle');
+    const [status, setStatus] = useState('done');
     const [data, setData] = useState({
         items:[],
     });
@@ -24,7 +24,7 @@ const useGetCategoryData = () => {
                 toggleLastPage(true);
             }
 
-        }).finally(() => setStatus("idle"))
+        }).finally(() => setStatus("done"))
     }
 
     return {
