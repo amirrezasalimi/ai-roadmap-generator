@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import services from '../services';
 
 const useGetCategoryData = () => {
-    const [status, setStatus] = useState('done');
+    const [status, setStatus] = useState('idle');
     const [data, setData] = useState({
         items:[],
     });
