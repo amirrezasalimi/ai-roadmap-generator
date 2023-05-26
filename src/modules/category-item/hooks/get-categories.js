@@ -4,7 +4,7 @@ import services from '../services';
 const useGetCategoryData = () => {
     const [status, setStatus] = useState('idle');
     const [data, setData] = useState({
-        items:[],
+        items: [],
     });
     const [isLastPage, toggleLastPage] = useState(false);
 

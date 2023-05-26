@@ -1,4 +1,6 @@
 import { backendServices } from "@/backend/services/services";
+import { HOST_URL } from "@/shared/constants/config";
+import { sendRoadmap } from "@/shared/helper/discord";
 import openAiInstance from "@/shared/helper/openai";
 
 export default async function handler(req, res) {
@@ -163,6 +165,7 @@ ${title}`
       generate_time: Math.floor((endTime - startTime) / 1000) // save seconds
     })
 
+    sendRoadmap(`🚀 New Roadmap Created:\n◽️ ${title} \n${HOST_URL}roadmap/${code}`);
     return res.status(200).json({
       ok: true,
       data: {
