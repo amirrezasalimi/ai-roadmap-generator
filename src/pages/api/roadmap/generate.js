@@ -165,7 +165,11 @@ ${title}`
       generate_time: Math.floor((endTime - startTime) / 1000) // save seconds
     })
 
-    sendRoadmap(`🚀 New Roadmap Created:\n◽️ ${title} \n${HOST_URL}roadmap/${code}`);
+    try {
+      sendRoadmap(`🚀 New Roadmap Created:\n◽️ ${title} \n${HOST_URL}roadmap/${code}`);
+    } catch (e) {
+      console.log(e);
+    }
     return res.status(200).json({
       ok: true,
       data: {
