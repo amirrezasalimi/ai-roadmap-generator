@@ -8,9 +8,8 @@ import 'reactflow/dist/style.css';
 import styles from './styles.module.css';
 import CustomNode from "@/modules/flow/components/custom-node";
 import FloatingEdge from "@/modules/flow/components/floating-edge";
-import {useEffect} from "react";
+import { useEffect } from "react";
 import mobileAndTabletCheck from "@/shared/helper/mobile-and-tablet-check";
-import Logo from "@/shared/components/logo";
 
 const nodeTypes = {
     custom: CustomNode
@@ -78,7 +77,7 @@ const dataToDataNode = async (nodes) => {
             draggable: finallyDraggable,
             parentId: String(nodeIsClone && _node.level > 2 ? placeholderNodeIdClone + _node.parent : placeholderNodeId + _node.parent),
             numberParentId: _node.parent,
-            position: {x: 0, y: 0},
+            position: { x: 0, y: 0 },
             type: "custom"
         }
         result.push(nodeData)
@@ -270,7 +269,7 @@ const getLayoutElements = (_nodes, _edges, _direction, _align, dagreGraph, offse
     });
 
     _nodes.forEach((node) => {
-        dagreGraph.setNode(node.id, {width: nodeWidth, height: nodeHeight});
+        dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
     });
     if (_edges) {
         _edges?.forEach((edge) => {
@@ -357,7 +356,7 @@ const findLastPosition = (parentId, lastPosition, data) => {
     }
 }
 
-const syncNodes = ({rightNodes, leftNodes}) => {
+const syncNodes = ({ rightNodes, leftNodes }) => {
     const syncRightNodes = [...rightNodes];
     const syncLeftNodes = [...leftNodes];
 
@@ -387,7 +386,7 @@ const syncNodes = ({rightNodes, leftNodes}) => {
                     clone: true,
                     parentId: String(currentLeftNode.id),
                     numberParentId: currentLeftNode.numberId,
-                    position: {x: 0, y: 0},
+                    position: { x: 0, y: 0 },
                     "type": "custom",
                     "targetPosition": "right",
                     "sourcePosition": "left"
@@ -414,7 +413,7 @@ const syncNodes = ({rightNodes, leftNodes}) => {
                     clone: true,
                     parentId: String(currentRightNode.id),
                     numberParentId: currentRightNode.numberId,
-                    position: {x: 0, y: 0},
+                    position: { x: 0, y: 0 },
                     "type": "custom",
                     "targetPosition": "left",
                     "sourcePosition": "right"
@@ -430,7 +429,7 @@ const syncNodes = ({rightNodes, leftNodes}) => {
     }
 }
 
-const sortingNodes = async ({rightNodes, leftNodes}) => {
+const sortingNodes = async ({ rightNodes, leftNodes }) => {
     const sortedRightNodes = [];
     const sortedLeftNodes = [];
     rightNodes.forEach((_node) => {
@@ -455,22 +454,22 @@ const sortingNodes = async ({rightNodes, leftNodes}) => {
     }
 }
 
-function DrawFlow({data}) {
+function DrawFlow({ data, onInit }) {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges] = useEdgesState([]);
 
     useEffect(() => {
         (async function () {
-            const {baseNodes, leftNodes, rightNodes} = await generateNodes(data);
-            const {syncLeftNodes, syncRightNodes} = syncNodes({
+            const { baseNodes, leftNodes, rightNodes } = await generateNodes(data);
+            const { syncLeftNodes, syncRightNodes } = syncNodes({
                 rightNodes: rightNodes,
                 leftNodes: leftNodes
             })
-            const {sortedLeftNodes, sortedRightNodes} = await sortingNodes({
+            const { sortedLeftNodes, sortedRightNodes } = await sortingNodes({
                 rightNodes: syncRightNodes,
                 leftNodes: syncLeftNodes
             })
-            const {baseEdges, leftEdges, rightEdges} = generateEdges(baseNodes, sortedLeftNodes, sortedRightNodes);
+            const { baseEdges, leftEdges, rightEdges } = generateEdges(baseNodes, sortedLeftNodes, sortedRightNodes);
             const [layoutNodesLeft, layoutEdgesLeft] = getLayoutElements(
                 sortedLeftNodes,
                 leftEdges,
@@ -510,7 +509,8 @@ function DrawFlow({data}) {
                     nodes={nodes}
                     fitView
                     onInit={(instance) => {
-                        instance.setViewport({y: Math.abs(firstNode.position.y)})
+                        instance.setViewport({ y: Math.abs(firstNode.position.y) })
+                        onInit(instance);
                     }}
                     fitViewOptions={{
                         zoom: 2

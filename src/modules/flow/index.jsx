@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import useGetFlow from './hooks/get-flow';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Container, Loading, Row, Text } from "@nextui-org/react";
 import DrawFlow from "./components/draw-flow";
 import Header from "./components/header";
@@ -9,6 +9,7 @@ import Head from "next/head";
 const Flow = () => {
   const hookFlow = useGetFlow();
   const { query } = useRouter();
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const flowId = query.id;
   useEffect(() => {
     if (flowId) {
@@ -45,8 +46,10 @@ const Flow = () => {
             <link rel="canonical" href={`https://ai-roadmap.com/roadmap/${flowId}`} />
 
           </Head>
-          <Header data={hookFlow?.data} />
-          <DrawFlow data={hookFlow.data.data} />
+          <Header reactFlowInstance={reactFlowInstance} data={hookFlow?.data} />
+          <DrawFlow data={hookFlow.data.data} onInit={instance => {
+            setReactFlowInstance(instance);
+          }} />
         </>
       }
     </>

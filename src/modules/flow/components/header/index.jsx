@@ -9,8 +9,12 @@ import APP from "@/shared/constants/app";
 import { LINKS } from "@/shared/constants/links";
 import copyToClipboard from "@/shared/helper/copy-clipboard";
 import useLike from "@/modules/flow/hooks/like-roadmap";
+import { toPng } from "html-to-image";
+import { ReactFlow, getRectOfNodes, getTransformForBounds, useReactFlow } from "reactflow";
+import { useCallback } from "react";
+import { BASE_URL } from "@/shared/constants/api-urls";
 
-const Header = ({ data }) => {
+const Header = ({ data, reactFlowInstance }) => {
     const link = typeof window !== "undefined" ? window?.location?.href : "";
     const hookLike = useLike(data?.is_liked, data?.id, data?.likes);
     const onClickLike = () => {
@@ -20,6 +24,45 @@ const Header = ({ data }) => {
             hookLike.likeAction();
         }
     }
+
+    const downloadPng = useCallback(() => {
+        const nodesBounds = getRectOfNodes(reactFlowInstance.getNodes());
+
+        const viewport = document.querySelector('.react-flow__viewport');
+        const width = viewport.scrollWidth;
+        const height = viewport.scrollHeight;
+
+        const centerX = nodesBounds.x + nodesBounds.width / 2;
+        const centerY = nodesBounds.y + nodesBounds.height / 2;
+        const scaleX = width / nodesBounds.width;
+        const scaleY = height / nodesBounds.height;
+        const scale = Math.min(scaleX, scaleY);
+
+        const bgColor = "rgb(23,23,23)"
+        const transform = [
+            width / 2 - centerX * scale,
+            height / 2 - centerY * scale,
+            scale
+        ];
+
+        toPng(viewport, {
+            backgroundColor: bgColor,
+            width: width,
+            height: height,
+            pixelRatio: 4,
+            style: {
+                width: width,
+                height: height,
+                background: bgColor,
+                transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
+            },
+        }).then(function (dataUrl) {
+            var link = document.createElement('a');
+            link.download = `ai-roadmap.com.png`;
+            link.href = dataUrl;
+            link.click();
+        });
+    }, [reactFlowInstance])
     return (
         <ComponentWithStyle>
             <div className={"main"}>
@@ -33,7 +76,7 @@ const Header = ({ data }) => {
                             </span>
                         </Button>
                     </Link>
-                   
+
                     <Link target={"_blank"} href={APP.DISCORD_LINK}>
                         <Button color={"default"} className={"btn"} size={'md'}>
                             <Image className={"svgIcon"} alt="discord" height={20} width={20} src={'/discord.svg'} />
@@ -92,13 +135,16 @@ const Header = ({ data }) => {
                         </Button>
                     </a>
                 </div>
-                <Button onClick={onClickLike} color={"default"} className={"shareItem"}>
+                <Button onClick={onClickLike} color={"default"} className={"likeItem"}>
                     {hookLike.data.isLiked ?
                         <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/heart.svg'} />
                         : <Image className={"githubSvg"} alt="github" height={20} width={20} src={'/heart-empty.svg'} />
                     }
                     <Spacer x={.5} />
                     {hookLike.data.likeCount}
+                </Button>
+                <Button onClick={downloadPng} color={"default"} bordered className="downloadBtn" >
+                    Download Png
                 </Button>
             </div>
         </ComponentWithStyle>

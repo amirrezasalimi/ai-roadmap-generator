@@ -34,17 +34,28 @@ export const ComponentWithStyle = styled('div', {
             marginInline: 100,
         },
         borderBottom: "1px solid #1D1D1D",
+
+        ".downloadBtn": {
+            border: "solid 1px white",
+            marginLeft:8,
+            "@xsMax": {
+                display: "none"
+            }
+        },
+        ".likeItem": {
+            marginInline: 8
+        },
         ".share": {
             display: "none",
             "@xs": {
                 display: "flex",
                 ".shareTitle": {
-                    marginRight: 12,
+                    marginRight: 8,
                     alignSelf: "center",
                     color: '#757475'
                 },
                 ".shareItem": {
-                    marginInline: 6
+                    marginInline: 8
                 },
             }
         },
