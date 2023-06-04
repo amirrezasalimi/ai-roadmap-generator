@@ -17,11 +17,8 @@
     "@vercel/og": "^0.1.0",
     "clsx": "^1.2.1",
     "dagre": "^0.8.5",
-<<<<<<< HEAD
     "html-to-image": "^1.11.11",
-=======
     "discord.js": "^14.11.0",
->>>>>>> 903b63f (feat: add discord sync recents feature)
     "javascript-time-ago": "^2.5.9",
     "memory-cache": "^0.2.0",
     "next": "13.1.5",
