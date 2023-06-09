@@ -7,7 +7,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)?',
+        source: '/roadmap/:id',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
@@ -17,10 +17,15 @@ const nextConfig = {
             key: 'Access-Control-Allow-Methods',
             value: 'GET,HEAD,PUT,PATCH,POST,DELETE'
           },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+          }
         ]
       }
     ]
   },
+  output: 'standalone',
 }
 
 module.exports = nextConfig

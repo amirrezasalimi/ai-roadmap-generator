@@ -11,7 +11,7 @@ import copyToClipboard from "@/shared/helper/copy-clipboard";
 import useLike from "@/modules/flow/hooks/like-roadmap";
 import { toPng } from "html-to-image";
 import { ReactFlow, getRectOfNodes, getTransformForBounds, useReactFlow } from "reactflow";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { BASE_URL } from "@/shared/constants/api-urls";
 
 const Header = ({ data, reactFlowInstance }) => {
@@ -25,7 +25,7 @@ const Header = ({ data, reactFlowInstance }) => {
         }
     }
 
-    const downloadPng = useCallback(() => {
+    const getDrawInfo = () => {
         const nodesBounds = getRectOfNodes(reactFlowInstance.getNodes());
 
         const viewport = document.querySelector('.react-flow__viewport');
@@ -44,6 +44,49 @@ const Header = ({ data, reactFlowInstance }) => {
             height / 2 - centerY * scale,
             scale
         ];
+        return {
+            width,
+            height,
+            bgColor,
+            transform,
+            scale,
+            viewport
+        }
+    }
+    const postMessage = (_data) => {
+        window.parent.postMessage(_data, "*");
+    }
+
+    // figma 
+    useEffect(() => {
+        if (reactFlowInstance) {
+            try {
+                const { viewport, ...drawDetails } = getDrawInfo();
+                const cleaned_data = reactFlowInstance.getNodes().map(node => ({
+                    id: node.id,
+                    label: node.data.label?.props?.children ?? "",
+                    position: node.position
+                }));
+                const edges = reactFlowInstance.getEdges();
+
+                const _data = {
+                    command: "export",
+                    data: {
+                        title: data.title,
+                        nodes: cleaned_data,
+                        draw: drawDetails,
+                        edges
+                    }
+                };
+                console.log(cleaned_data);
+                postMessage(_data);
+            } catch (e) {
+                console.log("e:", e);
+            }
+        }
+    }, [reactFlowInstance, postMessage])
+    const downloadPng = useCallback(() => {
+        const { width, height, bgColor, transform, viewport } = getDrawInfo();
 
         toPng(viewport, {
             backgroundColor: bgColor,

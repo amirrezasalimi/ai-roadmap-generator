@@ -8,7 +8,7 @@ import 'reactflow/dist/style.css';
 import styles from './styles.module.css';
 import CustomNode from "@/modules/flow/components/custom-node";
 import FloatingEdge from "@/modules/flow/components/floating-edge";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import mobileAndTabletCheck from "@/shared/helper/mobile-and-tablet-check";
 
 const nodeTypes = {
@@ -501,6 +501,7 @@ function DrawFlow({ data, onInit }) {
         }())
     }, [])
     const firstNode = nodes[0];
+
     return (
         <>
             {nodes?.length && edges?.length &&
