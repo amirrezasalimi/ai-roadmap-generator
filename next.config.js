@@ -7,7 +7,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/roadmap/:id',
+        source: '/api/roadmap/generate',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
