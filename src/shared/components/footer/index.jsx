@@ -18,7 +18,13 @@ const Footer = () => {
                 <Link href={APP.FIGMA_LINK} target="_blank">
                     <Button bordered color={"default"} size={'lg'}>
                         <Image className={"icon"} alt="figma" height={25} width={25} src={'/figma.svg'} />
-                        figma
+                        design 
+                    </Button>
+                </Link>
+                <Link href={APP.FIGJAM_PLUGIN}>
+                    <Button bordered color={"default"} size={'lg'}>
+                        <Image className={"icon"} alt="figma" height={25} width={25} src={'/figma.svg'} />
+                        figjam plugin
                     </Button>
                 </Link>
                 <Link href={"https://discord.gg/AP42aAvS74"} target="_blank">
