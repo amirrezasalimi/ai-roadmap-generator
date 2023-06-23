@@ -18,7 +18,13 @@ const Footer = () => {
                 <Link href={APP.FIGMA_LINK}>
                     <Button bordered color={"default"} size={'lg'}>
                         <Image className={"icon"} alt="figma" height={25} width={25} src={'/figma.svg'} />
-                        figma
+                        design 
+                    </Button>
+                </Link>
+                <Link href={APP.FIGJAM_PLUGIN}>
+                    <Button bordered color={"default"} size={'lg'}>
+                        <Image className={"icon"} alt="figma" height={25} width={25} src={'/figma.svg'} />
+                        figjam plugin
                     </Button>
                 </Link>
                 <Link href={APP.DISCORD_LINK}>
