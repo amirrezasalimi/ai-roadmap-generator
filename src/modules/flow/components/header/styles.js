@@ -13,8 +13,8 @@ export const ComponentWithStyle = styled('div', {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        "& .head-left":{
-            gap:"12px"
+        "& .head-left": {
+            gap: "12px"
         },
         ".btn": {
             // marginLeft: 12,
@@ -41,7 +41,7 @@ export const ComponentWithStyle = styled('div', {
 
         ".downloadBtn": {
             border: "solid 1px white",
-            marginLeft:8,
+            marginLeft: 8,
             "@xsMax": {
                 display: "none"
             }
