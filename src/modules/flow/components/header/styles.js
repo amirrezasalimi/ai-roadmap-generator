@@ -6,14 +6,18 @@ export const ComponentWithStyle = styled('div', {
     width: "100%",
     position: "fixed",
     background: "#171717",
-    ".main": {
+    ".head": {
         flex: 1,
         height: 'fit-content',
         padding: 16,
         display: "flex",
         justifyContent: "space-between",
+        alignItems: "center",
+        "& .head-left":{
+            gap:"12px"
+        },
         ".btn": {
-            marginLeft: 12,
+            // marginLeft: 12,
         },
         ".svgIcon": {
             marginRight: 12

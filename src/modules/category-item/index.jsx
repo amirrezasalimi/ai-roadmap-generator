@@ -11,7 +11,7 @@ import Footer from "@/shared/components/footer";
 import Head from "next/head";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
-const CategoryItem = () => {
+const   CategoryItem = () => {
     const router = useRouter();
     const { slug } = router.query;
     const hookGetCategoryData = useGetCategoryData();
@@ -76,6 +76,9 @@ const CategoryItem = () => {
                             </div>
                         </div>
                     }
+                    <div>
+                        
+                    </div>
                 </Row>
                 {
                     <Grid.Container gap={2} justify="center">

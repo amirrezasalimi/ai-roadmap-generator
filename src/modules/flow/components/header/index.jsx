@@ -108,8 +108,8 @@ const Header = ({ data, reactFlowInstance }) => {
     }, [reactFlowInstance])
     return (
         <ComponentWithStyle>
-            <div className={"main"}>
-                <Row>
+            <div className={"head"}>
+                <Row className="head-left" wrap="wrap">
                     <Logo size={"md"} />
                     <Link target={"_blank"} href={APP.GITHUB_LINK}>
                         <Button color={"default"} className={"btn"} size={'md'}>

@@ -8,7 +8,7 @@ import Image from "next/image";
 const Footer = () => {
     return (
         <ComponentWithStyle>
-            <Row className="buttonLinkContainer">
+            <Row className="buttonLinkContainer" wrap="wrap">
                 <Link href={APP.GITHUB_LINK} target="_blank">
                     <Button bordered color={"default"} size={'lg'}>
                         <Image className={"icon"} alt="github" height={25} width={25} src={'/github.svg'} />
